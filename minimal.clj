@@ -46,6 +46,15 @@
   Mozilla <em>Firefox</em>
 """>
 
+; accesskeys are part of the value token: each value can be followed by an 
+; optional accesskey definition prefixed with &
+<brand-name "Firefox" &F>
+
+<settings [(sys/os)]
+  {:windows "Options" &O}
+  {:macos "Preferences" &P}
+  {:linux "Settings" &S}>
+
 ; accessors use the same syntax as definitions
 ; variant access with :
 <about-brand-name "O {{ brand-name:accusative }}">
