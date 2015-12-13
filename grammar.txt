@@ -1,30 +1,29 @@
-ws := (, | \s)*
+ws := [\s,]+
 comment := ;.*
 
 identifier := [a-zA-Z0-9-_=+<.>/?]+
-
-quote-escape := \"
-expander-escape := \{{
-string :=
-  "(expander | expander-escape | [^"] | quote-escape)"
-  """(expander | expander-escape)"""
 keyword := :identifier
 trait := ^identifier
 argument := $identifier
 accesskey := &[a-zA-Z0-9]
 
-textvalue := string accesskey? | variant+
-variant := {keyword textvalue}
+string :=
+  "(expander | expander-escape | [^"] | quote-escape)"
+  """(expander | expander-escape)"""
+expander := {{ expression }}
+quote-escape := \"
+expander-escape := \{{
+
+value := string accesskey? | map
+map := {variant+}
+variant := keyword value
 index := [expression+]
 
-expression := string | keyword | arg | identifier | form | accessor
+expression := number | string | keyword | arg | identifier | form | accessor
 form := (identifier expression*)
 accessor := variant-accessor | trait-accessor
 variant-accessor := identifier:identifier
 trait-accessor := identifier^identifier
 
-expander := {{ expression }}
-
-entity := <identifier index? body+>
-body := comment | trait | textvalue
-
+entity := <identifier body+>
+body := comment | trait | index | value
