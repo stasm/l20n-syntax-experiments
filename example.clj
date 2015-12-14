@@ -106,15 +106,15 @@
 ; custom macros are defined similar to LISP functions
 ; the following symbols are supported for now:
 ;   entity variant defmacro cond
-;   not and or + - * / mod max min = <> < > <= >=
+;   not and or add sub mul div mod max min eq neq lt gt lte gte
 ; reserved for future use:
 ;   import true false
 (defmacro fr/byte-unit [unit]
   (cond
-    (= unit "B") "o"
-    (= unit "KB") "Ko"
-    (= unit "MB") "Mo"
-    (= unit "GB") "Go"
+    (eq unit "B") "o"
+    (eq unit "KB") "Ko"
+    (eq unit "MB") "Mo"
+    (eq unit "GB") "Go"
     :else "Oops"))
 
 ; macros can return variant names
@@ -122,7 +122,7 @@
 ; a convention)
 (defmacro my-plural [x]
   (cond
-    (= x 1) :one
+    (eq x 1) :one
     :else :many))
 
 ; macros can only be called with (name …); they cannot be referenced 
