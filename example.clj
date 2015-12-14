@@ -28,14 +28,19 @@
 ; keep simple things simple
 <brand-name "Firefox">
 
+; maps use keywords as keys;  keywords are immutable strings without spaces 
+; which evalutate to themselves.  this helps differentiate between strings that 
+; need to be translated and those which don't (like some macro return values)
+; maps require the index vector to be defined
 <brand-name [:nominative]
   {:nominative "Firefox"
    :accusative "Firefoksie"}>
 
-<brand-name [:nominative]
+<brand-name
   ; the first contiguous comment in the entity's body becomes the docstring
   ; @desc The name of the application
-  ^gender "masculine"
+  ^gender :masculine
+  [:nominative]
   {:nominative "Firefox"
    :accusative "Firefoksie"}>
 
@@ -113,8 +118,8 @@
     :else "Oops"))
 
 ; macros can return variant names
-; variant names evaluate to themselves (and are truthy) so we can use :else for 
-; the last condition in cond (as a convention)
+; keywords are truthy so we can use :else for pthe last condition in cond (as 
+; a convention)
 (defmacro my-plural [x]
   (cond
     (= x 1) :one

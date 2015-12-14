@@ -10,20 +10,22 @@ accesskey := &[a-zA-Z0-9]
 string :=
   "(expander | expander-escape | [^"] | quote-escape)"
   """(expander | expander-escape)"""
-expander := {{ expression }}
+expander := {{ form }}
 quote-escape := \"
 expander-escape := \{{
 
 value := string accesskey? | map
-map := {variant+}
-variant := keyword value
-index := [expression+]
+vector := [form+]
+map := vector? {pair+}
+variant-pair := keyword value
+trait-pair := trait keyword
 
-expression := number | string | keyword | arg | identifier | form | accessor
-form := (identifier expression*)
+form := number | string | keyword | arg | identifier | list | accessor
+list := (identifier form*)
 accessor := variant-accessor | trait-accessor
 variant-accessor := identifier:identifier
 trait-accessor := identifier^identifier
 
-entity := <identifier body+>
-body := comment | trait | index | value
+entity := <identifier docstring? meta? value?>
+docstring := comment
+meta := traitpair+
