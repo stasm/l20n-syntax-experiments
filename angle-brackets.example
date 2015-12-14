@@ -1,30 +1,3 @@
-; principles
-; ----------
-;
-; (and how this proposal achieves them)
-;
-; 0. keep this minimal
-;    - no attributes
-;    - no globals
-;    - no 'computed' expression syntax (use a built-in macro)
-;    - no 'this' expression
-;    - no imports
-;    - no local entities
-;    - no implicit default variants
-; 
-; 1. translations should be hard to break
-;    - good error recovery
-;    - args have $ sigils
-;    - variant names have : sigils
-;    - variants are easily recognizable by being enclosed with {}
-;    - only text between quotes should be localized (important for macros' 
-;      return values; see at the end)
-;
-; 2. naming is up to the developer and the localizer
-;    - allow for more glyphs in identifiers
-;    - use S-exprs to simplify the expression syntax
-
-
 ; keep simple things simple
 <brand-name "Firefox">
 
