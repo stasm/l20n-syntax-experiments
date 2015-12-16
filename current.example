@@ -6,7 +6,7 @@
 }>
 
 <brandNname {
-  nominative: "Firefox",
+ *nominative: "Firefox",
   accusative: "Firefoksie"
 }
   _gender: "masculine"
@@ -43,12 +43,12 @@
     feminine: "Otrzymałaś 1 nową wiadomość."
   },
   few: {
-    masculine: "Otrzymałeś {{ $new-messages }} nowe wiadomości.",
-    feminine: "Otrzymałaś {{ $new-messages }} nowe wiadomości."
+    masculine: "Otrzymałeś {{ $newMessages }} nowe wiadomości.",
+    feminine: "Otrzymałaś {{ $newMessages }} nowe wiadomości."
   },
   many: {
-    masculine: "Otrzymałeś {{ $new-messages }} nowych wiadomości.",
-    feminine: "Otrzymałaś {{ $new-messages }} nowych wiadomości."
+    masculine: "Otrzymałeś {{ $newMessages }} nowych wiadomości.",
+    feminine: "Otrzymałaś {{ $newMessages }} nowych wiadomości."
 }>
 
 <songs_list_rating_star
