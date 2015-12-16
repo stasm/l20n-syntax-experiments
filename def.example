@@ -1,0 +1,105 @@
+; keep simple things simple
+(def brand-name "Firefox")
+
+; maps use keywords as keys;  keywords are immutable strings without spaces 
+; which evalutate to themselves.  this helps differentiate between strings that 
+; need to be translated and those which don't (like some macro return values)
+; maps require the index vector to be defined
+(def brand-name [:nominative]
+  {:nominative "Firefox"
+   :accusative "Firefoksie"})
+
+(def brand-name
+  ; the first contiguous comment in the entity's body becomes the docstring
+  ; @desc The name of the application
+  ^gender :masculine
+  [:nominative]
+  {:nominative "Firefox"
+   :accusative "Firefoksie"})
+
+; no attributes, just conventions not enforced by syntax and used by bindings
+; triple-quotes for multiline strings
+; HTML is only recognized in triple-quoted strings (not sure about this)
+(def brand-name.title """
+  Mozilla <em>Firefox</em>
+""")
+
+; accesskeys are part of the value token: each value can be followed by an 
+; optional accesskey definition prefixed with &
+(def brand-name "Firefox" &F)
+
+(def settings [(sys/os)]
+  {:windows "Options" &O
+   :macos "Preferences" &P
+   :linux "Settings" &S})
+
+; accessors use the same syntax as definitions
+; variant access with :
+(def about-brand-name "O {{ brand-name:accusative }}")
+
+; trait access with ^
+(def crashed [brand-name^gender]
+  {:masculine "{{ brand-name }} uległ awarii"
+   :feminine "{{ brand-name }} uległa awarii"})
+
+; built-in macros are always namespaced: cldr/*, intl/*, os/* etc.
+(def you-received [(cldr/plural $new-messages) $gender]
+  ; @param $new-messages Number of new messages
+  ; @param $gender The gender of the recepient
+  {:one
+    {:masculine "Otrzymałeś 1 nową wiadomość."
+     :feminine "Otrzymałaś 1 nową wiadomość."}
+   :few
+    {:masculine "Otrzymałeś {{ $new-messages }} nowe wiadomości."
+     :feminine "Otrzymałaś {{ $new-messages }} nowe wiadomości."}
+   :many
+    {:masculine "Otrzymałeś {{ $new-messages }} nowych wiadomości."
+     :feminine "Otrzymałaś {{ $new-messages }} nowych wiadomości."}})
+
+; _-./ are allowed in identifiers
+; namespaces are also convention
+(def songs-list/rating-star.aria-label [(cldr/plural $n)]
+  {:one "{{ $n }} star"
+   :many "{{ $n }} stars"})
+
+; in English
+(def space-available
+  ; @param $num Number of units available
+  ; @param $unit Name of the unit
+  "{{ $num }}{{ $unit }} available")
+
+; in French; see the fr/byte-unit macro below
+(def space-available
+  ; @param $num Number of units available
+  ; @param $unit Name of the unit
+  [(cldr/plural $num)]
+  {:one "{{ $num }}{{ (fr/byte-unit $unit) }} disponible"
+   :many "{{ $num }}{{ (fr/byte-unit $unit) }} disponibles"})
+
+; custom macros are defined similar to LISP functions
+; the following symbols are supported for now:
+;   entity variant defmacro cond
+;   not and or + - * / mod max min = <> < > <= >=
+; reserved for future use:
+;   import true false
+(defmacro fr/byte-unit [unit]
+  (cond
+    (eq unit "B") "o"
+    (eq unit "KB") "Ko"
+    (eq unit "MB") "Mo"
+    (eq unit "GB") "Go"
+    :else "Oops"))
+
+; macros can return variant names
+; keywords are truthy so we can use :else for pthe last condition in cond (as 
+; a convention)
+(defmacro my-plural [x]
+  (cond
+    (eq x 1) :one
+    :else :many))
+
+; macros can only be called with (name …); they cannot be referenced 
+; nor passed around
+(def notification-count [(my-plural $n)]
+  {:one "{{ $n }} notification"
+   :many "{{ $n }} notifications"})
