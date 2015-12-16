@@ -1,0 +1,86 @@
+<brandName "Firefox">
+
+<brandName {
+ *nominative: "Firefox",
+  accusative: "Firefoksie"
+}>
+
+<brandNname {
+  nominative: "Firefox",
+  accusative: "Firefoksie"
+}
+  _gender: "masculine"
+  accesskey: "F"
+  title: """
+    Mozilla <em>Firefox</em>
+  """>
+
+<settings[@sys.os()] {
+  windows: "Options",
+  macos: "Preferences",
+  linux: "Settings"
+}
+  accesskey[@sys.os()]: {
+    windows: "O",
+    macos: "P",
+    linux: "S"
+  }>
+  
+<aboutBrandName "O {{ brandNname.accusative }}">
+
+<crashed[brandName::_gender] {
+  masculine: "{{ brandName }} uległ awarii",
+  feminine: "{{ brandName }} uległa awarii"
+}>
+
+/*
+ * @param $newMessages Number of new messages
+ * @param $gender The gender of the recepient
+ */
+<youReceived[@cldr.plural($newMessages), $gender] {
+  one: {
+    masculine: "Otrzymałeś 1 nową wiadomość.",
+    feminine: "Otrzymałaś 1 nową wiadomość."
+  },
+  few: {
+    masculine: "Otrzymałeś {{ $new-messages }} nowe wiadomości.",
+    feminine: "Otrzymałaś {{ $new-messages }} nowe wiadomości."
+  },
+  many: {
+    masculine: "Otrzymałeś {{ $new-messages }} nowych wiadomości.",
+    feminine: "Otrzymałaś {{ $new-messages }} nowych wiadomości."
+}>
+
+<songs_list_rating_star
+  ariaLabel[@cldr.plural($n)]: {
+    one: "{{ $n }} star",
+    many: "{{ $n }} stars"
+  }>
+
+/*
+ * @param $num Number of units available
+ * @param $unit Name of the unit
+ */
+<spaceAvailable "{{ $num }}{{ $unit }} available">
+
+<spaceAvailable[@cldr.plural($num)] {
+  one: "{{ $num }}{{ _byteUnit($unit) }} disponible",
+  many: "{{ $num }}{{ _byteUnit($unit) }} disponibles"
+}>
+
+<byteUnit($unit) {
+  $unit == "B" ? "o" :
+  $unit == "KB" ? "Ko" :
+  $unit == "MB" ? "Mo" :
+  $unit == "GB" ? "Go" :
+  "Oops"
+}>
+
+<myPlural($x) {
+  $x == 1 ? "one" : "many"
+}>
+
+<notificationCount[myPlural($n)] {
+  one: "{{ $n }} notification",
+  many: "{{ $n }} notifications"
+}>
