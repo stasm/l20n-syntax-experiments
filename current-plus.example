@@ -59,7 +59,7 @@
   ; @param $unit Name of the unit
   "{ $num }{ $unit } available">
 
-; in French; see the fr/byte-unit macro below
+; in French; see the byte-unit macro below
 <space-available
   ; @param $num Number of units available
   ; @param $unit Name of the unit
@@ -69,16 +69,16 @@
 
 ; custom macros are defined similar to LISP functions
 ; the following symbols are supported for now:
-;   entity variant defmacro cond
-;   not and or add sub mul div mod max min eq neq lt gt lte gte
+;   entity variant trait defmacro cond
+;   not and or add sub mul div mod max min eq? neq? lt? gt? lte? gte?
 ; reserved for future use:
 ;   import true false
-(defmacro fr/byte-unit [unit]
+(defmacro byte-unit [unit]
   (cond
-    (eq unit "B") "o"
-    (eq unit "KB") "Ko"
-    (eq unit "MB") "Mo"
-    (eq unit "GB") "Go"
+    (eq? unit "B") "o"
+    (eq? unit "KB") "Ko"
+    (eq? unit "MB") "Mo"
+    (eq? unit "GB") "Go"
     :else "Oops"))
 
 ; macros can return variant names
@@ -86,7 +86,7 @@
 ; a convention)
 (defmacro my-plural [x]
   (cond
-    (eq x 1) :one
+    (eq? x 1) :one
     :else :many))
 
 ; macros can only be called with (name …); they cannot be referenced 

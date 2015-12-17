@@ -8,9 +8,9 @@ principles
    - no globals
    - no 'computed' expression syntax (use a built-in macro)
    - no 'this' expression
-   - no imports
-   - no local entities
-   - no implicit default variants
+   - no local entities (only custom macros)
+   - no imports (for now)
+   - no implicit default variants (for now)
 
 2. keep it simple
    - don't reinvent the wheel
@@ -22,8 +22,10 @@ principles
    - good error recovery
    - sigils for args
    - sigils for variants
+   - sigils for traits
    - separate strings to be translated (surrounded with quotes) from strings 
      used programmatically (:keywords)
 
 4. naming is up to the developer and the localizer
    - allow for more glyphs in identifiers
+   - namespaces are convention
