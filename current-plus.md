@@ -1,4 +1,4 @@
-#A propsal to change the current syntax
+#A proposal to change the current syntax
 
 This is a proposal to make small changes to the current l20n syntax in order to
 fulfill most of the goals outlined in the readme.md file.
@@ -169,6 +169,28 @@ After:
     <brand-name [:nominative]
       {:nominative "Firefox"
        :accusative "Firefoksie"}>
+
+Alternative #1:  Use a special trait, `^default` to give hints about the 
+default variants:
+
+    <brand-name
+      ^default :nominative
+      {:nominative "Firefox"
+       :accusative "Firefoksie"}>
+
+    <you-received [(cldr/plural $new-messages) $gender]
+      ^default [:many :masculine]
+      ; @param $new-messages Number of new messages
+      ; @param $gender The gender of the recepient
+      {:one
+        {:masculine "Otrzymałeś 1 nową wiadomość."
+         :feminine "Otrzymałaś 1 nową wiadomość."}
+       :few
+        {:masculine "Otrzymałeś { $new-messages } nowe wiadomości."
+         :feminine "Otrzymałaś { $new-messages } nowe wiadomości."}
+       :many
+        {:masculine "Otrzymałeś { $new-messages } nowych wiadomości."
+         :feminine "Otrzymałaś { $new-messages } nowych wiadomości."}}>
 
 
 ##9. Expressions are LISP forms
