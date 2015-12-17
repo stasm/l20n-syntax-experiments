@@ -57,10 +57,13 @@ After:
 Keywords are just like strings but don't require quotes because they must
 follow the syntax of identifiers.  They make it easy to distinguish between
 user-facing strings that need to be localized and strings which are used for
-logic.
+logic.  Keywords are prefixed with a colon:
 
-Keywords can be used anywhere where strings can.  Additionally they are
-required when defining keys of hashes and as values of traits.
+    :foo
+
+Keywords can be used anywhere where strings can.  They evaluate to the string 
+that is their identifier.  Additionally they are required when defining keys of 
+hashes and as values of traits.
 
 Before:
 
