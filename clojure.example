@@ -1,0 +1,64 @@
+(entity brand "Firefox")
+
+(entity brand-name [:nominative]
+  {:nominative "Firefox"
+   :accusative "Firefoksie"})
+
+(entity brand-name
+  ; @desc The name of the application
+  ^{:gender :masculine}
+  [:nominative]
+  {:nominative "Firefox"
+   :accusative "Firefoksie"})
+
+(entity about-brand-name "O { (brand-name :accusative) }")
+
+(entity crashed [(trait brand-name :gender)]
+  {:masculine "{ brand-name } uległ awarii"
+   :feminine "{ brand-name } uległa awarii"})
+
+(entity you-received [(cldr/plural $new-messages) $gender]
+  ; @param $new-messages Number of new messages
+  ; @param $gender The gender of the recepient
+  {:one
+    {:masculine "Otrzymałeś 1 nową wiadomość."
+     :feminine "Otrzymałaś 1 nową wiadomość."}
+   :few
+    {:masculine "Otrzymałeś { $new-messages } nowe wiadomości."
+     :feminine "Otrzymałaś { $new-messages } nowe wiadomości."}
+   :many
+    {:masculine "Otrzymałeś { $new-messages } nowych wiadomości."
+     :feminine "Otrzymałaś { $new-messages } nowych wiadomości."}})
+
+(entity songs-list/rating-star.aria-label [(cldr/plural $n)]
+  {:one "{ $n } star"
+   :many "{ $n } stars"})
+
+(entity space-available
+  ; @param $num Number of units available
+  ; @param $unit Name of the unit
+  "{ $num }{ $unit } available")
+
+(entity space-available
+  ; @param $num Number of units available
+  ; @param $unit Name of the unit
+  [(cldr/plural $num)]
+  {:one "{ $num }{ (byte-unit $unit) } disponible"
+   :many "{ $num }{ (fr/byte-unit $unit) } disponibles"})
+
+(macri byte-unit [unit]
+  (cond
+    (eq? unit "B") "o"
+    (eq? unit "KB") "Ko"
+    (eq? unit "MB") "Mo"
+    (eq? unit "GB") "Go"
+    :else "Oops"))
+
+(macro my-plural [x]
+  (cond
+    (eq? x 1) :one
+    :else :many))
+
+(entity notification-count [(my-plural $n)]
+  {:one "{ $n } notification"
+   :many "{ $n } notifications"})
