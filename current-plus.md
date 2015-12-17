@@ -1,12 +1,12 @@
 #A propsal to change the current syntax
 
-This is a proposal to make small changes to the current l20n syntax in order to 
-fullfil most of the goals outlined in the readme.md file.
+This is a proposal to make small changes to the current l20n syntax in order to
+fulfill most of the goals outlined in the readme.md file.
 
 
 ##1. Change the placeable syntax to single braces
 
-Single braces are rarely used in verbatim meaning.  It's also easier to escape 
+Single braces are rarely used in verbatim meaning.  It's also easier to escape
 them unambiguously if needed.
 
 Before:
@@ -22,8 +22,8 @@ After:
 
 ##2. Allow for dashes and slashes in identifiers
 
-Dashes, slashes and dots can be used to build hierarchies in string ids.  Let's 
-strike a good balance by being more liberal syntacticly but encouraging strong 
+Dashes, slashes and dots can be used to build hierarchies in string ids.  Let's
+strike a good balance by being more liberal syntacticly but encouraging strong
 conventions:
 
   - / is for namespaces,
@@ -33,7 +33,6 @@ conventions:
 Before:
 
     <brandName "Firefox">
-    <connected "You are connected
 
 After:
 
@@ -42,7 +41,7 @@ After:
 
 ##3. Allow for dashes and slashes in argument names
 
-This is for conistency with the previous change.  It's optional but allowed.
+This is for consistency with the previous change.  It's optional but allowed.
 
 Before:
 
@@ -55,12 +54,12 @@ After:
 
 ##4. Introduce a new data type: keywords
 
-Keywords are just like strings but don't require quotes because they must 
-follow the syntax of identifiers.  They make it easy to distinguish between 
-user-facing strings that need to be loclaized and strings which are used for 
+Keywords are just like strings but don't require quotes because they must
+follow the syntax of identifiers.  They make it easy to distinguish between
+user-facing strings that need to be localized and strings which are used for
 logic.
 
-Keywords can be used anywhere where a string can.  Additionally they are 
+Keywords can be used anywhere where strings can.  Additionally they are
 required when defining keys of hashes and as values of traits.
 
 Before:
@@ -75,10 +74,10 @@ After:
 
 ##5. Introduce a new data type: traits
 
-Traits are private attributes for entities describing their grammatical 
-characteristcs like gender, animacy etc.  They are only available to other 
-entities and can't be queried by the developer.  Their values can only be 
-keywords.
+Traits are private attributes for entities describing their grammatical
+characteristics like gender, animacy etc.  They are only available to other
+entities and can't be queried by the developer.  Their values can only be
+keywords to discourage storing too much content in them.
 
 Before:
 
@@ -93,9 +92,9 @@ After:
 
 ##6. Simplify the key-value pair syntax
 
-It's inconsistent that attribute maps in the old syntax don't require commas 
-but hash maps do.  Since keys are always special symbols (keywords or traits) 
-and the number of elements in the hash must be even, we can simplify and unify 
+It's inconsistent that attribute maps in the old syntax don't require commas
+but hash maps do.  Since keys are always special symbols (keywords or traits)
+and the number of elements in the hash must be even, we can simplify and unify
 the syntax by removing the colon following the key and making commas optional.  
 
 Before:
@@ -117,7 +116,7 @@ After:
 
 ##7. Unify the accessor syntax with the definitions
 
-Ensure consistency and instant feedback of the accessor syntax by using the 
+Ensure consistency and instant feedback of the accessor syntax by using the
 same characters as the keyword and trait sigils.
 
 Before:
@@ -149,10 +148,10 @@ Alternative #3:  Make entities callable and check type of the argument:
 
 ##8. Remove the syntax for default variants
 
-The default variant syntax for hashes is useful but can be added later on.  For 
-now I suggest we make explicit indexes required.  Most of the entities already 
-have indexes and it's rare for an entity to not need one.  A notable exception 
-is the branding.  I admit it's suboptimal but I'm suggesting this for the sake 
+The default variant syntax for hashes is useful but can be added later on.  For
+now I suggest we make explicit indexes required.  Most of the entities already
+have indexes and it's rare for an entity to not need one.  A notable exception
+is the branding.  I admit it's suboptimal but I'm suggesting this for the sake
 of keeping this proposal minimal.
 
 Before:
@@ -171,18 +170,18 @@ After:
 
 ##9. Expressions are LISP forms
 
-In order to allow for dashes and slashes in identifiers I suggest we use 
-S-expressions for our expression syntax.  Every operator becomes a function so 
-essentially every expression is a call expression reducing the complexity of 
+In order to allow for dashes and slashes in identifiers I suggest we use
+S-expressions for our expression syntax.  Every operator becomes a function so
+essentially every expression is a call expression reducing the complexity of
 the expression syntax significantly.
 
-To keep things simple, macro identifiers follow the same rules as entity 
-identifiers.  They can't have < nor > in them which limited my choice of 
-names for the less-than and greater-than functions. I opted in for verbs for 
-arithmetic operations which had the added benefit of making it possible to read 
-the expression out in a natural manner: (add 1 2) reads "add 1 to 2" and to use 
-the question mark in the names of predicate functions: (eq? 1 2) reads "are 
-1 and 2 equal?."
+To keep things simple, macro identifiers follow the same rules as entity
+identifiers.  They can't have `<` nor `>` in them which limited my choice of
+names for the less-than and greater-than functions. I opted in for verbs for
+arithmetic operations which had the added benefit of making it possible to read
+the expression out in a natural manner: `(add 1 2)` reads "add 1 to 2" and to
+use the question mark in the names of predicate functions: `(eq? 1 2)` reads
+"are 1 and 2 equal?."
 
 The following symbols are supported for now:
 
@@ -191,7 +190,7 @@ The following symbols are supported for now:
     add sub mul div mod max min inv
     eq? neq? lt? gt? lte? gte?
     cldr/plural
-    
+
 Symbols reserved for future use:
 
     import
@@ -215,11 +214,13 @@ After:
     (lt? $hour 18)
     (even? $n)
 
-  
+
 ##10. Remove globals
 
-Use namespaced built-in macros to provide the functionality of globals and 
-remove an unnecessary data type.
+Use namespaced built-in macros to provide the functionality of globals and
+remove an unnecessary data type.  Macros can only be called and never
+referenced and passed around so there's no risk of name collisions with
+entities.
 
 Before:
 
@@ -237,7 +238,7 @@ After:
 ##11. Custom macros are also LISP forms
 
 Unify the syntax for defining macros with the proposed expression syntax.  
-Custom macros must not be namespaced (checked on runtime).  Macros can return 
+Custom macros must not be namespaced (checked on runtime).  Macros can return
 strings or keywords.
 
 Before:
@@ -272,9 +273,9 @@ After:
 
 ##12. Introduce docstrings
 
-(Optional) The first contiguous comment in the body of the entity becomes its 
-docstring.  This helps authoring and refactoring tools better understand the 
-semantics of the entity and also keeps everything in one place when the entity 
+(Optional) The first contiguous comment in the body of the entity becomes its
+docstring.  This helps authoring and refactoring tools better understand the
+semantics of the entity and also keeps everything in one place when the entity
 is moved in the file of between files.
 
     <brand-name
@@ -289,7 +290,7 @@ is moved in the file of between files.
 
 ##13.  Only allow for double-quotes around strings
 
-Reduce the complexity and make files written by different people more similar 
+Reduce the complexity and make files written by different people more similar
 to each other.
 
 Before:
