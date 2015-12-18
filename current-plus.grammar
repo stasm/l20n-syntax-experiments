@@ -1,24 +1,22 @@
 ws := [\s,]+
 comment := ;.*
 
-identifier := [a-zA-Z0-9-_=+<.>/?]+
+identifier := [a-zA-Z0-9-_./?]+
 keyword := :identifier
 trait := ^identifier
 argument := $identifier
-accesskey := &[a-zA-Z0-9]
 
 string :=
-  "(expander | expander-escape | [^"] | quote-escape)"
-  """(expander | expander-escape)"""
-expander := {{ form }}
-quote-escape := \"
-expander-escape := \{{
+  "(expander | escape | [^"])"
+  """(expander | escape)"""
+expander := { form }
+escape := \" | \{ | \}
 
-value := string accesskey? | map
+value := string | map
 vector := [form+]
 map := vector? {pair+}
 variant-pair := keyword value
-trait-pair := trait keyword
+trait-pair := trait (keyword | vector)
 
 form := number | string | keyword | arg | identifier | list | accessor
 list := (identifier form*)
