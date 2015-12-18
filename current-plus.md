@@ -148,6 +148,11 @@ Alternative #3:  Make entities callable and check type of the argument:
     (brand-name :nominative)
     (brand-name ^gender)
 
+I like #3 because it's simple, lightweight, re-uses the expression syntax and 
+allows for multiple keywords to be passed as arguments to access deeply nested 
+values.  It also doesn't prevent us from introducing special accessor syntax 
+later on.
+
 
 ##8. Remove the syntax for default variants
 

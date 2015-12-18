@@ -1,29 +1,29 @@
 ws := [\s,]+
-comment := ;.*
+comment := ';' .*
 
 identifier := [a-zA-Z0-9-_./?]+
-keyword := :identifier
-trait := ^identifier
+keyword := ':' identifier
+trait := '^' identifier
 argument := $identifier
 
 string :=
-  "(expander | escape | [^"])"
-  """(expander | escape)"""
-expander := { form }
-escape := \" | \{ | \}
+  '"' (expander | escape | [^"]) '"'
+  '"""' (expander | escape) '"""'
+expander := '{' form '}'
+escape := '\"' | '\{' | '\}'
 
 value := string | map
-vector := [form+]
-map := vector? {pair+}
-variant-pair := keyword value
-trait-pair := trait (keyword | vector)
+vector := '[' form+ ']'
+map := vector? '{' pair+ '}'
+variant-pair := keyword ws+ value
+trait-pair := trait ws+ (keyword | vector)
 
-form := number | string | keyword | arg | identifier | list | accessor
-list := (identifier form*)
+form := number | string | keyword | arg | identifier | accessor | list
+list := '(' identifier ws+ form* ')'
+
 accessor := variant-accessor | trait-accessor
-variant-accessor := identifier:identifier
-trait-accessor := identifier^identifier
+variant-accessor := identifier keyword
+trait-accessor := identifier trait
 
-entity := <identifier docstring? meta? value?>
-docstring := comment
-meta := traitpair+
+entity := '<' identifier meta? ws+ value? '>'
+meta := (ws+ traitpair)+
