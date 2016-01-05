@@ -1,0 +1,170 @@
+===============================================================================
+Elm
+===============================================================================
+
+type Widget
+    = ScatterPlot (List (Int, Int))
+    | LogData (List String)
+    | TimePlot (List (Time, Int))
+
+view : Widget -> Element
+view widget =
+    case widget of
+      ScatterPlot points ->
+          viewScatterPlot points
+
+      LogData logs ->
+          flow down (map viewLog logs)
+
+      TimePlot occurrences ->
+          viewTimePlot occurrences
+
+
+===============================================================================
+Rust
+===============================================================================
+
+fn process_message(msg: Message) {
+    match msg {
+        Message::Quit => quit(),
+        Message::ChangeColor(r, g, b) => change_color(r, g, b),
+        Message::Move { x: x, y: y } => move_cursor(x, y),
+        Message::Write(s) => println!("{}", s),
+    };
+}
+
+match x {
+    1 | 2 => println!("one or two"),
+    3 => println!("three"),
+    _ => println!("anything"),
+}
+
+match x {
+    1 ... 5 => println!("one through five"),
+    _ => println!("anything"),
+}
+
+match x {
+    'a' ... 'j' => println!("early letter"),
+    'k' ... 'z' => println!("late letter"),
+    _ => println!("something else"),
+}
+
+match x {
+    OptionalInt::Value(i) if i > 5 => println!("Got an int bigger than five!"),
+    OptionalInt::Value(..) => println!("Got an int!"),
+    OptionalInt::Missing => println!("No such luck."),
+}
+
+
+===============================================================================
+F#
+===============================================================================
+
+let list1 = [ 1; 5; 100; 450; 788 ]
+
+// Pattern matching by using the cons pattern and a list
+// pattern that tests for an empty list.
+let rec printList listx =
+    match listx with
+    | head :: tail -> printf "%d " head; printList tail
+    | [] -> printfn ""
+
+printList list1
+
+// Pattern matching with multiple alternatives on the same line.  
+let filter123 x =
+    match x with
+    | 1 | 2 | 3 -> printfn "Found 1, 2, or 3!"
+    | a -> printfn "%d" a
+
+// The same function written with the pattern matching
+// function syntax.
+let filterNumbers =
+    function | 1 | 2 | 3 -> printfn "Found 1, 2, or 3!"
+             | a -> printfn "%d" a
+
+// This example uses patterns that have when guards.
+let detectValue point target =
+    match point with
+    | (a, b) when a = target && b = target -> printfn "Both values match target %d." target
+    | (a, b) when a = target -> printfn "First value matched target in (%d, %d)" target b
+    | (a, b) when b = target -> printfn "Second value matched target in (%d, %d)" a target
+    | _ -> printfn "Neither value matches target."
+
+
+===============================================================================
+Haskell
+===============================================================================
+
+take m ys               = case (m,ys) of
+                            (0,_)       ->  []
+                            (_,[])      ->  []
+                            (n,x:xs)    ->  x : take (n-1) xs
+
+
+sign x |  x >  0        =   1
+       |  x == 0        =   0
+       |  x <  0        =  -1
+
+
+===============================================================================
+Elixir
+===============================================================================
+
+case {1, 2, 3} do
+  {4, 5, 6} ->
+    "This clause won't match"
+  {1, x, 3} ->
+    "This clause will match and bind x to 2 in this clause"
+  _ ->
+    "This clause would match any value"
+end
+
+case {1, 2, 3} do
+  {1, x, 3} when x > 0 ->
+    "Will match"
+  _ ->
+end
+
+
+===============================================================================
+Racket
+===============================================================================
+
+(match "yes"
+    ["no" #f]
+    ["yes" #t])
+
+(match '(1 2 3 4 5)
+  [(list 1 a ..3 5) a]
+  [_ 'else])
+
+
+===============================================================================
+Perl
+===============================================================================
+
+use Switch;
+
+switch(argument){
+   case 1            { print "number 1" }
+   case "a"          { print "string a" }
+   case [1..10,42]   { print "number in list" }
+   case (\@array)    { print "number in list" }
+   case /\w+/        { print "pattern" }
+   case qr/\w+/      { print "pattern" }
+   case (\%hash)     { print "entry in hash" }
+   case (\&sub)      { print "arg to subroutine" }
+   else              { print "previous case not true" }
+}
+
+
+===============================================================================
+Scala
+===============================================================================
+
+def eval(e: Expr): Int = e match {
+  case Number(n) => n
+  case Sum(l, r) => eval(l) + eval(r)
+}
