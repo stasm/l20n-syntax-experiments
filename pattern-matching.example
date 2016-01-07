@@ -71,25 +71,25 @@ like1 {
   MATCH NUMBER/PLURAL $num {
     :one ->
       "{ LIST/FIRST $names } likes your photo"
-    :other = MATCH $num - (LIST/LENGTH $names)
-      0 ->
+    :other -> MATCH NUMBER/PLURAL ($num - (LIST/LENGTH $names))
+      _ WHEN $num = (LIST/LENGTH $names) ->
         "{ LIST/FORMAT $names } like your photo"
-      1 ->
+      :one ->
         "{ LIST/FORMAT $names "1 other person" } like your photo"
-      _ ->
+      :other ->
         "{ LIST/FORMAT $names "{ _ } other people" } like your photo"
   }
 }
 
 like2 {
-  MATCH (NUMBER/PLURAL $num) ($num - (LIST/LENGTH $names)) {
+  MATCH (NUMBER/PLURAL $num) (NUMBER/PLURAL ($num - (LIST/LENGTH $names))) {
     :one _ ->
       |{ LIST/FIRST $names } likes your photo
-    :other 0 ->
+    :other _ WHEN $num = (LIST/LENGTH $names) ->
       |{ LIST/FORMAT $names } like your photo
-    :other 1 ->
+    :other :one ->
       |{ LIST/FORMAT $names "1 other person" } like your photo
-    :other _ ->
+    :other :other ->
       |{ LIST/FORMAT $names "{ _ } other people" } like your photo
   }
 }
