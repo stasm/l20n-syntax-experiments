@@ -26,7 +26,6 @@ html-welcome {
   |opportunity by keeping the power of the Web in your hands.
 }
 
-
 crashed {
   MATCH :gender OF brand-name {
     :masculine -> "{ brand-name } uległ awarii"
@@ -82,17 +81,17 @@ like1 {
 }
 
 like2 {
-  MATCH
-    (NUMBER/PLURAL ((LIST/LENGTH $names) + $num))
-    (NUMBER/PLURAL $num)
-  {
-    :one ANY ->
+  MATCH (
+    NUMBER/PLURAL ((LIST/LENGTH $names) + $num),
+    NUMBER/PLURAL $num
+  ) {
+    (:one, ANY) ->
       |{ LIST/FIRST $names } likes your photo
-    :other ANY WHEN $num = 0 ->
+    (:other, ANY) WHEN $num = 0 ->
       |{ LIST/FORMAT $names } like your photo
-    :other :one ->
+    (:other, :one) ->
       |{ LIST/FORMAT $names "1 other person" } like your photo
-    :other :other ->
+    (:other, :other) ->
       |{ LIST/FORMAT $names "{ $num } other people" } like your photo
   }
 }
