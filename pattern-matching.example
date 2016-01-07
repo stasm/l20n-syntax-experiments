@@ -47,16 +47,16 @@ byte-unit {
     "KB" -> "Ko"
     "MB" -> "Mo"
     "GB" -> "Go"
-    _    -> "Oops"
+    ANY  -> "Oops"
   }
 }
 
 plural {
   MATCH $1 {
-    1                          -> :one
-    _ WHEN $1 % 100 IN 10..19  -> :other
-    _ WHEN $1 % 10 IN 2..4     -> :few
-    _                          -> :other
+    1                            -> :one
+    ANY WHEN $1 % 100 IN 10..19  -> :other
+    ANY WHEN $1 % 10 IN 2..4     -> :few
+    ANY                          -> :other
   }
 }
 
@@ -71,21 +71,24 @@ like1 {
   MATCH NUMBER/PLURAL $num {
     :one ->
       "{ LIST/FIRST $names } likes your photo"
-    :other -> MATCH NUMBER/PLURAL ($num - (LIST/LENGTH $names))
-      _ WHEN $num = (LIST/LENGTH $names) ->
+    :other -> MATCH NUMBER/PLURAL ($num - (LIST/LENGTH $names) AS $rest) {
+      ANY WHEN $rest = 0 ->
         "{ LIST/FORMAT $names } like your photo"
       :one ->
         "{ LIST/FORMAT $names "1 other person" } like your photo"
       :other ->
-        "{ LIST/FORMAT $names "{ _ } other people" } like your photo"
+        "{ LIST/FORMAT $names "{ $rest } other people" } like your photo"
   }
 }
 
 like2 {
-  MATCH (NUMBER/PLURAL $num) (NUMBER/PLURAL ($num - (LIST/LENGTH $names))) {
-    :one _ ->
+  MATCH
+    (NUMBER/PLURAL $num)
+    (NUMBER/PLURAL ($num - (LIST/LENGTH $names) AS $rest))
+  {
+    :one ANY ->
       |{ LIST/FIRST $names } likes your photo
-    :other _ WHEN $num = (LIST/LENGTH $names) ->
+    :other ANY WHEN $num = (LIST/LENGTH $names) ->
       |{ LIST/FORMAT $names } like your photo
     :other :one ->
       |{ LIST/FORMAT $names "1 other person" } like your photo
