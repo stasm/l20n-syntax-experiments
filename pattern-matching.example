@@ -52,11 +52,11 @@ byte-unit {
 }
 
 plural {
-  COND {
-    $1 == 1            = :one
-    $1 % 100 IN 10..19 = :other
-    $1 % 10 IN 2..4    = :few
-    _                  = :other
+  MATCH $1 {
+    1                          = :one
+    _ WHEN $1 % 100 IN 10..19  = :other
+    _ WHEN $1 % 10 IN 2..4     = :few
+    _                          = :other
   }
 }
 
@@ -82,14 +82,14 @@ like1 {
 }
 
 like2 {
-  MATCH (CLDR/PLURAL $num), ($num - (LIST/LENGTH $names) {
-    :one, _ =
+  MATCH (CLDR/PLURAL $num) ($num - (LIST/LENGTH $names) {
+    :one _ =
       |{ INTL/FORMAT-LIST $names } likes your photo
-    :other, 0 =
+    :other 0 =
       |{ INTL/FORMAT-LIST $names } like your photo
-    :other, 1 =
+    :other 1 =
       |{ INTL/FORMAT-LIST $names "1 other person" } like your photo
-    :other, _ =
+    :other _ =
       |{ INTL/FORMAT-LIST $names "{ _ } other people" } like your photo
   }
 }
