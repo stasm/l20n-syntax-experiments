@@ -6,14 +6,15 @@ brand-name {
 
 brand-name {
   HAS :gender :feminine
+  HAS :animate FALSE
   "Aurora"
 }
 
 brand-name {
   HAS :gender :masculine
   MATCH $1 {
-    :nominative OR NONE -> "Firefox"
-    :accusative         -> "Firefoksa"
+    :nominative OR NONE = "Firefox"
+    :accusative         = "Firefoksa"
   }
 }
 
@@ -28,34 +29,34 @@ html-welcome {
 
 crashed {
   MATCH :gender OF brand-name {
-    :masculine -> "{ brand-name } uległ awarii"
-    :feminine  -> "{ brand-name } uległa awarii"
+    :masculine = "{ brand-name } uległ awarii"
+    :feminine  = "{ brand-name } uległa awarii"
   }
 }
 
 space-available {
   MATCH CLDR/PLURAL $num {
-    :one  -> "{ $num }{ byte-unit $unit } disponible"
-    :many -> "{ $num }{ byte-unit $unit } disponibles"
+    :one  = "{ $num }{ byte-unit $unit } disponible"
+    :many = "{ $num }{ byte-unit $unit } disponibles"
   }
 }
 
 byte-unit {
   MATCH $1 {
-    "B"  -> "o"
-    "KB" -> "Ko"
-    "MB" -> "Mo"
-    "GB" -> "Go"
-    _    -> "Oops"
+    "B"  = "o"
+    "KB" = "Ko"
+    "MB" = "Mo"
+    "GB" = "Go"
+    _    = "Oops"
   }
 }
 
 plural {
   COND {
-    $1 = 1             -> :one
-    $1 % 100 IN 10..19 -> :other
-    $1 % 10 IN 2..4    -> :few
-    _                  -> :other
+    $1 == 1            = :one
+    $1 % 100 IN 10..19 = :other
+    $1 % 10 IN 2..4    = :few
+    _                  = :other
   }
 }
 
@@ -68,27 +69,27 @@ plural {
 
 like1 {
   MATCH CLDR/PLURAL $num {
-    :one ->
+    :one =
       "{ INTL/FORMAT-LIST $names } likes your photo"
-    :other -> MATCH $num - (LIST/LENGTH $names)
-      0 -> 
+    :other = MATCH $num - (LIST/LENGTH $names)
+      0 = 
         "{ INTL/FORMAT-LIST $names } like your photo"
-      1 ->
+      1 =
         "{ INTL/FORMAT-LIST $names "1 other person" } like your photo"
-      _ ->
+      _ =
         "{ INTL/FORMAT-LIST $names "{ _ } other people" } like your photo"
   }
 }
 
 like2 {
   MATCH (CLDR/PLURAL $num), ($num - (LIST/LENGTH $names) {
-    :one, _ ->
+    :one, _ =
       |{ INTL/FORMAT-LIST $names } likes your photo
-    :other, 0 ->
+    :other, 0 =
       |{ INTL/FORMAT-LIST $names } like your photo
-    :other, 1 ->
+    :other, 1 =
       |{ INTL/FORMAT-LIST $names "1 other person" } like your photo
-    :other, _ ->
+    :other, _ =
       |{ INTL/FORMAT-LIST $names "{ _ } other people" } like your photo
   }
 }
