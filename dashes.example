@@ -1,0 +1,50 @@
+<brand-name "Firefox">
+
+<brand-name
+  ^gender :masculine
+  [ :nominative = "Firefox"
+    :accusative = "Firefoksie" ]>
+
+<about-brand-name "O { brand-name :accusative }">
+
+<crashed
+  [ (^gender brand-name) ?
+      :masculine = "{ brand-name } uległ awarii"
+      :feminine  = "{ brand-name } uległa awarii" ]>
+
+<you-received
+  [ (cldr/plural new-messages) ?
+    :one
+      [ $gender ?
+        :masculine -> "Otrzymałeś 1 nową wiadomość."
+        :feminine -> "Otrzymałaś 1 nową wiadomość." ]
+   :few
+      [ $gender ?
+        :masculine "Otrzymałeś ${ new-messages } nowe wiadomości."
+        :feminine "Otrzymałaś ${ new-messages } nowe wiadomości." ]
+   :many
+      [ $gender ?
+        :masculine "Otrzymałeś { $new-messages } nowych wiadomości."
+        :feminine "Otrzymałaś { $new-messages } nowych wiadomości." ]]>
+
+<space-available
+  [ cldr/plural $num ?
+      :one "{ $num }{ (byte-unit $unit) } disponible"
+      :many "{ $num }{ (byte-unit $unit) } disponibles" ]>
+
+(defmacro byte-unit [unit]
+  (cond
+    (eq? unit "B") "o"
+    (eq? unit "KB") "Ko"
+    (eq? unit "MB") "Mo"
+    (eq? unit "GB") "Go"
+    :else "Oops"))
+
+(defmacro my-plural [x]
+  (cond
+    (eq? x 1) :one
+    :else :many))
+
+<notification-count [ (my-plural $n) ?
+  :one "{ $n } notification"
+  :many "{ $n } notifications" ]>

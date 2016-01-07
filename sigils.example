@@ -1,0 +1,66 @@
+<brand-name "Firefox">
+
+@brand-name =
+  -- gender = :masculine
+  nominative = "Firefox"
+  accusative = "Firefoksie"
+
+@about-brand-name = "O { @brand-name in :accusative }">
+
+@crashed =
+  { :gender of @brand-name match
+      :masculine -> "{ @brand-name } uległ awarii"
+      :feminine  -> "{ @brand-name } uległa awarii" }>
+
+<you-received
+  { match cldr/plural $new-messages ?
+    :one
+      [ $gender ?
+        :masculine -> "Otrzymałeś 1 nową wiadomość."
+        :feminine -> "Otrzymałaś 1 nową wiadomość." ]]
+   :few
+    {:masculine "Otrzymałeś ${ new-messages } nowe wiadomości."
+     :feminine "Otrzymałaś ${ new-messages } nowe wiadomości."}
+   :many
+    {:masculine "Otrzymałeś { $new-messages } nowych wiadomości."
+     :feminine "Otrzymałaś { $new-messages } nowych wiadomości."}}>
+
+<you-received
+  { match [cldr/plural $new-messages, $gender] |
+      :one -> {
+        :masculine -> "Otrzymałeś 1 nową wiadomość."
+        :feminine -> "Otrzymałaś 1 nową wiadomość."
+      }
+      :few -> {
+        :masculine "Otrzymałeś ${ new-messages } nowe wiadomości."
+        :feminine "Otrzymałaś ${ new-messages } nowe wiadomości."
+      }
+      :many -> {
+        :masculine "Otrzymałeś { $new-messages } nowych wiadomości."
+        :feminine "Otrzymałaś { $new-messages } nowych wiadomości."
+      }
+  }>
+
+<space-available
+  [ cldr/plural $num |
+      :one "{ $num }{ (byte-unit $unit) } disponible"
+      :many "{ $num }{ (byte-unit $unit) } disponibles" ]>
+
+<byte-unit [unit] ->
+
+(defmacro byte-unit [unit]
+  (cond
+    (eq? unit "B") "o"
+    (eq? unit "KB") "Ko"
+    (eq? unit "MB") "Mo"
+    (eq? unit "GB") "Go"
+    :else "Oops"))
+
+(defmacro my-plural [x]
+  (cond
+    (eq? x 1) :one
+    :else :many))
+
+<notification-count [(my-plural $n)]
+  {:one "{ $n } notification"
+   :many "{ $n } notifications"}>
