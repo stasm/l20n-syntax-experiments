@@ -35,7 +35,7 @@ crashed {
 }
 
 space-available {
-  MATCH CLDR/PLURAL $num {
+  MATCH NUMBER/PLURAL $num {
     :one  -> "{ $num }{ byte-unit $unit } disponible"
     :many -> "{ $num }{ byte-unit $unit } disponibles"
   }
@@ -68,28 +68,28 @@ plural {
 -- Anna, Nick and 5 other people like your photo
 
 like1 {
-  MATCH CLDR/PLURAL $num {
+  MATCH NUMBER/PLURAL $num {
     :one ->
-      "{ INTL/FORMAT-LIST $names } likes your photo"
+      "{ LIST/FIRST $names } likes your photo"
     :other = MATCH $num - (LIST/LENGTH $names)
       0 ->
-        "{ INTL/FORMAT-LIST $names } like your photo"
+        "{ LIST/FORMAT $names } like your photo"
       1 ->
-        "{ INTL/FORMAT-LIST $names "1 other person" } like your photo"
+        "{ LIST/FORMAT $names "1 other person" } like your photo"
       _ ->
-        "{ INTL/FORMAT-LIST $names "{ _ } other people" } like your photo"
+        "{ LIST/FORMAT $names "{ _ } other people" } like your photo"
   }
 }
 
 like2 {
-  MATCH (CLDR/PLURAL $num) ($num - (LIST/LENGTH $names)) {
+  MATCH (NUMBER/PLURAL $num) ($num - (LIST/LENGTH $names)) {
     :one _ ->
-      |{ INTL/FORMAT-LIST $names } likes your photo
+      |{ LIST/FIRST $names } likes your photo
     :other 0 ->
-      |{ INTL/FORMAT-LIST $names } like your photo
+      |{ LIST/FORMAT $names } like your photo
     :other 1 ->
-      |{ INTL/FORMAT-LIST $names "1 other person" } like your photo
+      |{ LIST/FORMAT $names "1 other person" } like your photo
     :other _ ->
-      |{ INTL/FORMAT-LIST $names "{ _ } other people" } like your photo
+      |{ LIST/FORMAT $names "{ _ } other people" } like your photo
   }
 }
