@@ -52,10 +52,10 @@ byte-unit {
 
 plural {
   MATCH $1 {
-    1                            -> :one
-    ANY WHEN $1 % 100 IN 10..19  -> :other
-    ANY WHEN $1 % 10 IN 2..4     -> :few
-    ANY                          -> :other
+    1                              -> :one
+    ANY WHEN $1 % 100 IN (10..19)  -> :other
+    ANY WHEN $1 % 10 IN (2..4)     -> :few
+    ANY                            -> :other
   }
 }
 
