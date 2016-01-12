@@ -34,7 +34,7 @@ crashed {
 }
 
 space-available {
-  MATCH NUMBER/PLURAL $num {
+  MATCH NUMBER_PLURAL $num {
     :one  -> "{ $num }{ byte-unit $unit } disponible"
     :many -> "{ $num }{ byte-unit $unit } disponibles"
   }
@@ -67,31 +67,31 @@ plural {
 -- Anna, Nick and 5 other people like your photo
 
 like1 {
-  MATCH NUMBER/PLURAL ((LIST/LENGTH $names) + $num) {
+  MATCH NUMBER_PLURAL ((LIST_LENGTH $names) + $num) {
     :one ->
-      "{ LIST/FIRST $names } likes your photo"
-    :other -> MATCH NUMBER/PLURAL $num {
+      "{ LIST_FIRST $names } likes your photo"
+    :other -> MATCH NUMBER_PLURAL $num {
       ANY WHEN $num = 0 ->
-        "{ LIST/FORMAT $names } like your photo"
+        "{ LIST_FORMAT $names } like your photo"
       :one ->
-        "{ LIST/FORMAT $names "1 other person" } like your photo"
+        "{ LIST_FORMAT $names "1 other person" } like your photo"
       :other ->
-        "{ LIST/FORMAT $names "{ $num } other people" } like your photo"
+        "{ LIST_FORMAT $names "{ $num } other people" } like your photo"
   }
 }
 
 like2 {
   MATCH (
-    NUMBER/PLURAL ((LIST/LENGTH $names) + $num),
-    NUMBER/PLURAL $num
+    NUMBER_PLURAL ((LIST_LENGTH $names) + $num),
+    NUMBER_PLURAL $num
   ) {
     (:one, ANY) ->
-      |{ LIST/FIRST $names } likes your photo
+      |{ LIST_FIRST $names } likes your photo
     (:other, ANY) WHEN $num = 0 ->
-      |{ LIST/FORMAT $names } like your photo
+      |{ LIST_FORMAT $names } like your photo
     (:other, :one) ->
-      |{ LIST/FORMAT $names "1 other person" } like your photo
+      |{ LIST_FORMAT $names "1 other person" } like your photo
     (:other, :other) ->
-      |{ LIST/FORMAT $names "{ $num } other people" } like your photo
+      |{ LIST_FORMAT $names "{ $num } other people" } like your photo
   }
 }
