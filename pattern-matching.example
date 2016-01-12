@@ -67,7 +67,7 @@ plural {
 -- Anna, Nick and 5 other people like your photo
 
 like1 {
-  MATCH NUMBER_PLURAL ((LIST_LENGTH $names) + $num) {
+  MATCH NUMBER_PLURAL (LIST_LENGTH $names + $num) {
     :one ->
       "{ LIST_FIRST $names } likes your photo"
     :other -> MATCH NUMBER_PLURAL $num {
@@ -82,7 +82,7 @@ like1 {
 
 like2 {
   MATCH (
-    NUMBER_PLURAL ((LIST_LENGTH $names) + $num),
+    NUMBER_PLURAL (LIST_LENGTH $names + $num),
     NUMBER_PLURAL $num
   ) {
     (:one, ANY) ->
