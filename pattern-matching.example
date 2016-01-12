@@ -5,13 +5,13 @@ brand-name {
 }
 
 brand-name {
-  HAS :gender :feminine
-  HAS :animate FALSE
+  HAS gender :feminine
+  HAS animate FALSE
   "Aurora"
 }
 
 brand-name {
-  HAS :gender :masculine
+  HAS gender :masculine
   MATCH $1 {
     :nominative OR NONE -> "Firefox"
     :accusative         -> "Firefoksa"
@@ -27,7 +27,7 @@ html-welcome {
 }
 
 crashed {
-  MATCH :gender OF brand-name {
+  MATCH gender OF brand-name {
     :masculine -> "{ brand-name } uległ awarii"
     :feminine  -> "{ brand-name } uległa awarii"
   }
