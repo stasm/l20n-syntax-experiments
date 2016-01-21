@@ -4,6 +4,8 @@ brand-name {
   |Firefox
 }
 
+-local-message { "This won't be considered by compare-locales." }
+
 brand-name {
   -gender :feminine
   -animate FALSE
