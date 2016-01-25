@@ -68,9 +68,9 @@ plural2 {
     _, 2..4, _   -> :few
     _            -> :other
   } WHERE {
-    num      = $1
-    tens     = num % 10
-    hundreds = num % 100
+    num      <- $1
+    tens     <- num % 10
+    hundreds <- num % 100
   }
 }
 
@@ -93,7 +93,7 @@ like1 {
       :other ->
         "{ ...names, "{ num } other people" } like your photo"
   } WHERE {
-    first, ... = names
+    first, ... <- names
   }
 }
 
@@ -111,39 +111,32 @@ like2 {
     :other, :other ->
       |{ ...names "{ num } other people" } like your photo
   } WHERE {
-    first, ... = names
+    first, ... <- names
   }
 }
 
 like3 {
-
-  MATCH (
+  MATCH
     NUMBER_PLURAL num-friends,
     NUMBER_PLURAL num-strangers
-  ) {
-
+  {
     :one, _ WHEN num-strangers = 0 ->
       |{ first } likes your photo
-
     _, :one WHEN num-friends = 0 ->
       |1 person likes your photo
-
     ... ->
       |{ first, second, other-people } like your photo
-
   } WHERE {
-
-    first, second, ...rest   = friends
-    num-hidden-friends       = LIST_LENGTH rest
-    num-friends              = LIST_LENGTH friends
-    num-strangers            = LIST_LENGTH strangers
-
+    first, second, ...rest   <- friends
+    num-hidden-friends       <- LIST_LENGTH rest
+    num-friends              <- LIST_LENGTH friends
+    num-strangers            <- LIST_LENGTH strangers
     other-people = MATCH (total, NUMBER_PLURAL total) {
       0, _        -> NONE
       _, :one     -> "1 other person"
       _, :other   -> "{ total } other people"
     } WHERE {
-      total = num-hidden-friends + num-strangers
+      total <- num-hidden-friends + num-strangers
     }
   }
 }
