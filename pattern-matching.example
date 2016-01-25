@@ -20,7 +20,7 @@ brand-name {
   }
 }
 
-about-brand-name { "About { brand-name :accusative }" }
+about-brand-name { "About { :accusative >> brand-name }" }
 
 html-welcome {
   |Welcome to <a>{ brand-name }</a>, the free and open source operating system 
@@ -29,16 +29,16 @@ html-welcome {
 }
 
 crashed {
-  MATCH brand-name -gender {
+  MATCH brand-name << -gender {
     :masculine -> "{ brand-name } uległ awarii"
     :feminine  -> "{ brand-name } uległa awarii"
   }
 }
 
 space-available {
-  MATCH NUMBER_PLURAL num {
-    :one  -> "{ num }{ -byte-unit unit } disponible"
-    :many -> "{ num }{ -byte-unit unit } disponibles"
+  MATCH NUMBER_PLURAL << num {
+    :one  -> "{ num }{ -byte-unit << unit } disponible"
+    :many -> "{ num }{ -byte-unit << unit } disponibles"
   }
 }
 
@@ -53,18 +53,18 @@ space-available {
 }
 
 space-available-intl1 {
-  MATCH NUMBER_PLURAL num {
-    :one  -> "{ UNIT DIGITAL SHORT num } disponible"
-    :many -> "{ UNIT DIGITAL SHORT num } disponibles"
+  MATCH num >> NUMBER_PLURAL {
+    :one  -> "{ UNIT DIGITAL SHORT << num } disponible"
+    :many -> "{ UNIT DIGITAL SHORT << num } disponibles"
   }
 }
 
 space-available-intl2 {
-  MATCH NUMBER_PLURAL num {
+  MATCH num >> NUMBER_PLURAL {
     :one  -> "{ unit } disponible"
     :many -> "{ unit } disponibles"
   } WHERE {
-    unit <- UNIT DIGITAL AUTO SHORT num
+    unit <- num >> UNIT DIGITAL AUTO SHORT
   }
 }
 
@@ -99,10 +99,10 @@ plural2 {
 -- Anna, Nick and 5 other people like your photo
 
 like1 {
-  MATCH NUMBER_PLURAL (LIST_LENGTH names + num) {
+  MATCH names >> LIST_LENGTH + num >> NUMBER_PLURAL {
     :one ->
       "{ first } likes your photo"
-    :other -> MATCH NUMBER_PLURAL num {
+    :other -> MATCH num >> NUMBER_PLURAL {
       _ WHEN num = 0 ->
         "{ names } like your photo"
       :one ->
@@ -116,8 +116,8 @@ like1 {
 
 like2 {
   MATCH
-    NUMBER_PLURAL (LIST_LENGTH names + num),
-    NUMBER_PLURAL num
+    NUMBER_PLURAL << names >> LIST_LENGTH + num,
+    NUMBER_PLURAL << num
   {
     :one, _ ->
       |{ first } likes your photo
@@ -134,8 +134,8 @@ like2 {
 
 like3 {
   MATCH
-    NUMBER_PLURAL num-friends,
-    NUMBER_PLURAL num-strangers
+    NUMBER_PLURAL << num-friends,
+    NUMBER_PLURAL << num-strangers
   {
     :one, _ WHEN num-strangers = 0 ->
       |{ first } likes your photo
@@ -145,10 +145,10 @@ like3 {
       |{ first, second, other-people } like your photo
   } WHERE {
     first, second, ...rest   <- friends
-    num-hidden-friends       <- LIST_LENGTH rest
-    num-friends              <- LIST_LENGTH friends
-    num-strangers            <- LIST_LENGTH strangers
-    other-people = MATCH (total, NUMBER_PLURAL total) {
+    num-hidden-friends       <- LIST_LENGTH << rest
+    num-friends              <- LIST_LENGTH << friends
+    num-strangers            <- LIST_LENGTH << strangers
+    other-people = MATCH (total, total >> NUMBER_PLURAL) {
       0, _        -> NONE
       _, :one     -> "1 other person"
       _, :other   -> "{ total } other people"
