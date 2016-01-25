@@ -36,37 +36,37 @@ crashed {
 }
 
 space-available {
-  MATCH NUMBER_PLURAL $num {
-    :one  -> "{ $num }{ byte-unit $unit } disponible"
-    :many -> "{ $num }{ byte-unit $unit } disponibles"
+  MATCH NUMBER_PLURAL num {
+    :one  -> "{ num }{ -byte-unit unit } disponible"
+    :many -> "{ num }{ -byte-unit unit } disponibles"
   }
 }
 
-byte-unit {
+-byte-unit {
   MATCH $1 {
     "B"  -> "o"
     "KB" -> "Ko"
     "MB" -> "Mo"
     "GB" -> "Go"
-    ANY  -> "Oops"
+    _    -> "Oops"
   }
 }
 
 plural1 {
   MATCH $1 {
-    1                              -> :one
-    ANY WHEN $1 % 100 IN (10..19)  -> :other
-    ANY WHEN $1 % 10 IN (2..4)     -> :few
-    ANY                            -> :other
+    1                          -> :one
+    _ WHEN $1 % 100 IN 10..19  -> :other
+    _ WHEN $1 % 10 IN 2..4     -> :few
+    _                          -> :other
   }
 }
 
 plural2 {
-  MATCH (num, tens, hundreds) {
-    (1, ANY, ANY)         -> :one
-    (ANY, ANY, (10..19))  -> :other
-    (ANY, (2..4), ANY)    -> :few
-    ANY                   -> :other
+  MATCH num, tens, hundreds {
+    1, ...       -> :one
+    ..., 10..19  -> :other
+    _, 2..4, _   -> :few
+    _            -> :other
   } WHERE {
     num      = $1
     tens     = num % 10
@@ -82,32 +82,36 @@ plural2 {
 -- Anna, Nick and 5 other people like your photo
 
 like1 {
-  MATCH NUMBER_PLURAL (LIST_LENGTH $names + $num) {
+  MATCH NUMBER_PLURAL (LIST_LENGTH names + num) {
     :one ->
-      "{ LIST_FIRST $names } likes your photo"
-    :other -> MATCH NUMBER_PLURAL $num {
-      ANY WHEN $num = 0 ->
-        "{ LIST_FORMAT $names } like your photo"
+      "{ first } likes your photo"
+    :other -> MATCH NUMBER_PLURAL num {
+      _ WHEN num = 0 ->
+        "{ names } like your photo"
       :one ->
-        "{ LIST_FORMAT $names "1 other person" } like your photo"
+        "{ ...names, "1 other person" } like your photo"
       :other ->
-        "{ LIST_FORMAT $names "{ $num } other people" } like your photo"
+        "{ ...names, "{ num } other people" } like your photo"
+  } WHERE {
+    first, ... = names
   }
 }
 
 like2 {
-  MATCH (
-    NUMBER_PLURAL (LIST_LENGTH $names + $num),
-    NUMBER_PLURAL $num
-  ) {
-    (:one, ANY) ->
-      |{ LIST_FIRST $names } likes your photo
-    (:other, ANY) WHEN $num = 0 ->
-      |{ LIST_FORMAT $names } like your photo
-    (:other, :one) ->
-      |{ LIST_FORMAT $names "1 other person" } like your photo
-    (:other, :other) ->
-      |{ LIST_FORMAT $names "{ $num } other people" } like your photo
+  MATCH
+    NUMBER_PLURAL (LIST_LENGTH names + num),
+    NUMBER_PLURAL num
+  {
+    :one, _ ->
+      |{ first } likes your photo
+    :other, _ WHEN num = 0 ->
+      |{ names } like your photo
+    :other, :one ->
+      |{ ...names,  "1 other person" } like your photo
+    :other, :other ->
+      |{ ...names "{ num } other people" } like your photo
+  } WHERE {
+    first, ... = names
   }
 }
 
@@ -118,26 +122,26 @@ like3 {
     NUMBER_PLURAL num-strangers
   ) {
 
-    (:one, ANY) WHEN num-strangers = 0 ->
+    :one, _ WHEN num-strangers = 0 ->
       |{ first } likes your photo
 
-    (ANY, :one) WHEN num-friends = 0 ->
+    _, :one WHEN num-friends = 0 ->
       |1 person likes your photo
 
-    (ANY, ANY) ->
-      |{ (first, second, other-people) } like your photo
+    ... ->
+      |{ first, second, other-people } like your photo
 
   } WHERE {
 
-    (first, second, ...rest) = $friends
+    first, second, ...rest   = friends
     num-hidden-friends       = LIST_LENGTH rest
-    num-friends              = LIST_LENGTH $friends
-    num-strangers            = LIST_LENGTH $strangers
+    num-friends              = LIST_LENGTH friends
+    num-strangers            = LIST_LENGTH strangers
 
     other-people = MATCH (total, NUMBER_PLURAL total) {
-      (0, ANY)        -> NONE
-      (ANY, :one)     -> "1 other person"
-      (ANY, :other)   -> "{ total } other people"
+      0, _        -> NONE
+      _, :one     -> "1 other person"
+      _, :other   -> "{ total } other people"
     } WHERE {
       total = num-hidden-friends + num-strangers
     }
