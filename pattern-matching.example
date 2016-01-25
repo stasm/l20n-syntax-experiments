@@ -7,13 +7,13 @@ brand-name {
 -local-message { "This won't be considered by compare-locales." }
 
 brand-name {
-  -gender :feminine
-  -animate FALSE
+  ^gender  <- :feminine
+  ^animate <- FALSE
   "Aurora"
 }
 
 brand-name {
-  -gender :masculine
+  ^gender <- :masculine
   MATCH $1 {
     :nominative OR NONE -> "Firefox"
     :accusative         -> "Firefoksa"
@@ -29,7 +29,7 @@ html-welcome {
 }
 
 crashed {
-  MATCH brand-name << -gender {
+  MATCH brand-name << ^gender {
     :masculine -> "{ brand-name } uległ awarii"
     :feminine  -> "{ brand-name } uległa awarii"
   }
@@ -148,7 +148,7 @@ like3 {
     num-hidden-friends       <- LIST_LENGTH << rest
     num-friends              <- LIST_LENGTH << friends
     num-strangers            <- LIST_LENGTH << strangers
-    other-people = MATCH (total, total >> NUMBER_PLURAL) {
+    other-people             <- MATCH total, total >> NUMBER_PLURAL {
       0, _        -> NONE
       _, :one     -> "1 other person"
       _, :other   -> "{ total } other people"
