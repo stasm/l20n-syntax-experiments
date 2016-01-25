@@ -134,26 +134,23 @@ like2 {
 
 like3 {
   MATCH
-    NUMBER_PLURAL << num-friends,
-    NUMBER_PLURAL << num-strangers
+    NUMBER_PLURAL << total
   {
-    :one, _ WHEN num-strangers = 0 ->
+    :one WHEN first ->
       |{ first } likes your photo
-    _, :one WHEN num-friends = 0 ->
+    :one ->
       |1 person likes your photo
-    ... ->
+    _ ->
       |{ first, second, other-people } like your photo
   } WHERE {
-    first, second, ...rest   <- friends
-    num-hidden-friends       <- LIST_LENGTH << rest
-    num-friends              <- LIST_LENGTH << friends
-    num-strangers            <- LIST_LENGTH << strangers
-    other-people             <- MATCH total, total >> NUMBER_PLURAL {
-      0, _        -> NONE
-      _, :one     -> "1 other person"
-      _, :other   -> "{ total } other people"
+    first, second, ...rest <- friends
+    total                  <- (...friends, ...strangers) >> LIST_LENGTH
+    other-people           <- MATCH total >> NUMBER_PLURAL {
+      _ WHEN total = 0 -> NONE
+      :one             -> "1 other person"
+      :other           -> "{ total } other people"
     } WHERE {
-      total <- num-hidden-friends + num-strangers
+      total <- (...rest, ...strangers) >> LIST_LENGTH
     }
   }
 }
