@@ -52,6 +52,23 @@ space-available {
   }
 }
 
+space-available-intl1 {
+  MATCH NUMBER_PLURAL num {
+    :one  -> "{ UNIT DIGITAL SHORT num } disponible"
+    :many -> "{ UNIT DIGITAL SHORT num } disponibles"
+  }
+}
+
+space-available-intl2 {
+  MATCH NUMBER_PLURAL num {
+    :one  -> "{ unit } disponible"
+    :many -> "{ unit } disponibles"
+  } WHERE {
+    unit <- UNIT DIGITAL AUTO SHORT num
+  }
+}
+
+
 plural1 {
   MATCH $1 {
     1                          -> :one
