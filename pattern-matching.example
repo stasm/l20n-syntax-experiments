@@ -36,7 +36,7 @@ crashed {
 }
 
 space-available {
-  match number_plural << $num {
+  match $num >> @plural {
     :one  -> "{ $num }{ -byte-unit << $unit } disponible"
     :many -> "{ $num }{ -byte-unit << $unit } disponibles"
   }
@@ -53,18 +53,18 @@ space-available {
 }
 
 space-available-intl1 {
-  match $num >> number_plural {
-    :one  -> "{ number_unit type:digital style:short << $num } disponible"
-    :many -> "{ number_unit type:digital style:short << $num } disponibles"
+  match $num >> @plural {
+    :one  -> "{ $num >> @unit type:digital style:short } disponible"
+    :many -> "{ $num >> @unit type:digital style:short } disponibles"
   }
 }
 
 space-available-intl2 {
-  match $num >> number_plural {
+  match $num >> @plural {
     :one  -> "{ unit } disponible"
     :many -> "{ unit } disponibles"
   } where {
-    unit = $num >> number_unit type:digitial style:short
+    unit = $num >> @unit type:digitial style:short
   }
 }
 
@@ -99,7 +99,7 @@ plural2 {
 -- Anna, Nick and 5 other people like your photo
 
 like1 {
-  match $names >> list_length + $num >> number_plural {
+  match $names >> @length + $num >> @plural {
     :one ->
       "{ first } likes your photo"
     :other -> match $num >> number_plural {
@@ -116,8 +116,8 @@ like1 {
 
 like2 {
   match
-    number_plural << $names >> list_length + $num,
-    number_plural << $num
+    @plural << $names >> @length + $num,
+    @plural << $num
   {
     :one, _ ->
       |{ first } likes your photo
@@ -134,7 +134,7 @@ like2 {
 
 like3 {
   match
-    number_plural << total
+    total >> @plural
   {
     :one if first ->
       |{ first } likes your photo
@@ -144,19 +144,19 @@ like3 {
       |{ first, second, other-people } like your photo
   } where {
     first, second, ...rest = $friends
-    total                  = (...$friends, ...$strangers) >> list_length
-    other-people           = match total >> number_plural {
+    total                  = (...$friends, ...$strangers) >> @length
+    other-people           = match total >> @plural {
       _ if total = 0 -> none
       :one           -> "1 other person"
       :other         -> "{ total } other people"
     } where {
-      total = (...rest, ...$strangers) >> list_length
+      total = (...rest, ...$strangers) >> @length
     }
   }
 }
 
 apples {
-  match $num >> number_plural {
+  match $num >> @plural {
     :one   -> "An apple"
     :other -> "{ $num } apples"
   }
