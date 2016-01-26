@@ -154,3 +154,10 @@ like3 {
     }
   }
 }
+
+apples {
+  MATCH num >> NUMBER_PLURAL {
+    :one   -> "An apple"
+    :other -> "{ num } apples"
+  }
+}
