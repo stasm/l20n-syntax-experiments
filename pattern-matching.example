@@ -7,13 +7,13 @@ brand-name {
 -local-message { "This won't be considered by compare-locales." }
 
 brand-name {
-  ^gender  <- :feminine
-  ^animate <- FALSE
+  ^gender  = :feminine
+  ^animate = FALSE
   "Aurora"
 }
 
 brand-name {
-  ^gender <- :masculine
+  ^gender = :masculine
   MATCH $1 {
     :nominative OR NONE -> "Firefox"
     :accusative         -> "Firefoksa"
@@ -64,7 +64,7 @@ space-available-intl2 {
     :one  -> "{ unit } disponible"
     :many -> "{ unit } disponibles"
   } WHERE {
-    unit <- num >> UNIT DIGITAL AUTO SHORT
+    unit = num >> UNIT DIGITAL AUTO SHORT
   }
 }
 
@@ -85,9 +85,9 @@ plural2 {
     _, 2..4, _   -> :few
     _            -> :other
   } WHERE {
-    num      <- $1
-    tens     <- num % 10
-    hundreds <- num % 100
+    num      = $1
+    tens     = num % 10
+    hundreds = num % 100
   }
 }
 
@@ -103,14 +103,14 @@ like1 {
     :one ->
       "{ first } likes your photo"
     :other -> MATCH num >> NUMBER_PLURAL {
-      _ WHEN num = 0 ->
+      _ WHEN num == 0 ->
         "{ names } like your photo"
       :one ->
         "{ ...names, "1 other person" } like your photo"
       :other ->
         "{ ...names, "{ num } other people" } like your photo"
   } WHERE {
-    first, ... <- names
+    first, ... = names
   }
 }
 
@@ -121,14 +121,14 @@ like2 {
   {
     :one, _ ->
       |{ first } likes your photo
-    :other, _ WHEN num = 0 ->
+    :other, _ WHEN num == 0 ->
       |{ names } like your photo
     :other, :one ->
       |{ ...names,  "1 other person" } like your photo
     :other, :other ->
       |{ ...names "{ num } other people" } like your photo
   } WHERE {
-    first, ... <- names
+    first, ... = names
   }
 }
 
@@ -143,14 +143,14 @@ like3 {
     _ ->
       |{ first, second, other-people } like your photo
   } WHERE {
-    first, second, ...rest <- friends
-    total                  <- (...friends, ...strangers) >> LIST_LENGTH
-    other-people           <- MATCH total >> NUMBER_PLURAL {
+    first, second, ...rest = friends
+    total                  = (...friends, ...strangers) >> LIST_LENGTH
+    other-people           = MATCH total >> NUMBER_PLURAL {
       _ WHEN total = 0 -> NONE
       :one             -> "1 other person"
       :other           -> "{ total } other people"
     } WHERE {
-      total <- (...rest, ...strangers) >> LIST_LENGTH
+      total = (...rest, ...strangers) >> LIST_LENGTH
     }
   }
 }
