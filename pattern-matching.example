@@ -8,13 +8,13 @@ brand-name {
 
 brand-name {
   ^gender  = :feminine
-  ^animate = FALSE
+  ^animate = false
   "Aurora"
 }
 
 brand-name {
   ^gender = :masculine
-  MATCH $1 {
+  match $1 {
     :nominative OR NONE -> "Firefox"
     :accusative         -> "Firefoksa"
   }
@@ -29,21 +29,21 @@ html-welcome {
 }
 
 crashed {
-  MATCH brand-name << ^gender {
+  match brand-name << ^gender {
     :masculine -> "{ brand-name } uległ awarii"
     :feminine  -> "{ brand-name } uległa awarii"
   }
 }
 
 space-available {
-  MATCH NUMBER_PLURAL << $num {
+  match number_plural << $num {
     :one  -> "{ $num }{ -byte-unit << $unit } disponible"
     :many -> "{ $num }{ -byte-unit << $unit } disponibles"
   }
 }
 
 -byte-unit {
-  MATCH $1 {
+  match $1 {
     "B"  -> "o"
     "KB" -> "Ko"
     "MB" -> "Mo"
@@ -53,38 +53,38 @@ space-available {
 }
 
 space-available-intl1 {
-  MATCH $num >> NUMBER_PLURAL {
+  match $num >> number_plural {
     :one  -> "{ UNIT DIGITAL SHORT << $num } disponible"
     :many -> "{ UNIT DIGITAL SHORT << $num } disponibles"
   }
 }
 
 space-available-intl2 {
-  MATCH $num >> NUMBER_PLURAL {
+  match $num >> number_plural {
     :one  -> "{ unit } disponible"
     :many -> "{ unit } disponibles"
-  } WHERE {
+  } where {
     unit = $num >> UNIT DIGITAL AUTO SHORT
   }
 }
 
 
 plural1 {
-  MATCH $1 {
+  match $1 {
     1                          -> :one
-    _ WHEN $1 % 100 IN 10..19  -> :other
-    _ WHEN $1 % 10 IN 2..4     -> :few
+    _ when $1 % 100 in 10..19  -> :other
+    _ when $1 % 10 in 2..4     -> :few
     _                          -> :other
   }
 }
 
 plural2 {
-  MATCH num, tens, hundreds {
+  match num, tens, hundreds {
     1, ...       -> :one
     ..., 10..19  -> :other
     _, 2..4, _   -> :few
     _            -> :other
-  } WHERE {
+  } where {
     num      = $1
     tens     = num % 10
     hundreds = num % 100
@@ -99,64 +99,64 @@ plural2 {
 -- Anna, Nick and 5 other people like your photo
 
 like1 {
-  MATCH $names >> LIST_LENGTH + $num >> NUMBER_PLURAL {
+  match $names >> list_length + $num >> number_plural {
     :one ->
       "{ first } likes your photo"
-    :other -> MATCH $num >> NUMBER_PLURAL {
-      _ WHEN $num == 0 ->
+    :other -> match $num >> number_plural {
+      _ when $num == 0 ->
         "{ $names } like your photo"
       :one ->
         "{ ...$names, "1 other person" } like your photo"
       :other ->
         "{ ...$names, "{ $num } other people" } like your photo"
-  } WHERE {
+  } where {
     first, ... = $names
   }
 }
 
 like2 {
-  MATCH
-    NUMBER_PLURAL << $names >> LIST_LENGTH + $num,
-    NUMBER_PLURAL << $num
+  match
+    number_plural << $names >> list_length + $num,
+    number_plural << $num
   {
     :one, _ ->
       |{ first } likes your photo
-    :other, _ WHEN $num == 0 ->
+    :other, _ when $num == 0 ->
       |{ names } like your photo
     :other, :one ->
       |{ ...$names,  "1 other person" } like your photo
     :other, :other ->
       |{ ...$names "{ $num } other people" } like your photo
-  } WHERE {
+  } where {
     first, ... = $names
   }
 }
 
 like3 {
-  MATCH
-    NUMBER_PLURAL << total
+  match
+    number_plural << total
   {
-    :one WHEN first ->
+    :one when first ->
       |{ first } likes your photo
     :one ->
       |1 person likes your photo
     _ ->
       |{ first, second, other-people } like your photo
-  } WHERE {
+  } where {
     first, second, ...rest = $friends
-    total                  = (...$friends, ...$strangers) >> LIST_LENGTH
-    other-people           = MATCH total >> NUMBER_PLURAL {
-      _ WHEN total = 0 -> NONE
+    total                  = (...$friends, ...$strangers) >> list_length
+    other-people           = match total >> number_plural {
+      _ when total = 0 -> none
       :one             -> "1 other person"
       :other           -> "{ total } other people"
-    } WHERE {
-      total = (...rest, ...$strangers) >> LIST_LENGTH
+    } where {
+      total = (...rest, ...$strangers) >> list_length
     }
   }
 }
 
 apples {
-  MATCH $num >> NUMBER_PLURAL {
+  match $num >> number_plural {
     :one   -> "An apple"
     :other -> "{ $num } apples"
   }
