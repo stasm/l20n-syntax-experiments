@@ -36,9 +36,9 @@ crashed {
 }
 
 space-available {
-  MATCH NUMBER_PLURAL << num {
-    :one  -> "{ num }{ -byte-unit << unit } disponible"
-    :many -> "{ num }{ -byte-unit << unit } disponibles"
+  MATCH NUMBER_PLURAL << $num {
+    :one  -> "{ $num }{ -byte-unit << $unit } disponible"
+    :many -> "{ $num }{ -byte-unit << $unit } disponibles"
   }
 }
 
@@ -53,18 +53,18 @@ space-available {
 }
 
 space-available-intl1 {
-  MATCH num >> NUMBER_PLURAL {
-    :one  -> "{ UNIT DIGITAL SHORT << num } disponible"
-    :many -> "{ UNIT DIGITAL SHORT << num } disponibles"
+  MATCH $num >> NUMBER_PLURAL {
+    :one  -> "{ UNIT DIGITAL SHORT << $num } disponible"
+    :many -> "{ UNIT DIGITAL SHORT << $num } disponibles"
   }
 }
 
 space-available-intl2 {
-  MATCH num >> NUMBER_PLURAL {
+  MATCH $num >> NUMBER_PLURAL {
     :one  -> "{ unit } disponible"
     :many -> "{ unit } disponibles"
   } WHERE {
-    unit = num >> UNIT DIGITAL AUTO SHORT
+    unit = $num >> UNIT DIGITAL AUTO SHORT
   }
 }
 
@@ -99,36 +99,36 @@ plural2 {
 -- Anna, Nick and 5 other people like your photo
 
 like1 {
-  MATCH names >> LIST_LENGTH + num >> NUMBER_PLURAL {
+  MATCH $names >> LIST_LENGTH + $num >> NUMBER_PLURAL {
     :one ->
       "{ first } likes your photo"
-    :other -> MATCH num >> NUMBER_PLURAL {
-      _ WHEN num == 0 ->
-        "{ names } like your photo"
+    :other -> MATCH $num >> NUMBER_PLURAL {
+      _ WHEN $num == 0 ->
+        "{ $names } like your photo"
       :one ->
-        "{ ...names, "1 other person" } like your photo"
+        "{ ...$names, "1 other person" } like your photo"
       :other ->
-        "{ ...names, "{ num } other people" } like your photo"
+        "{ ...$names, "{ $num } other people" } like your photo"
   } WHERE {
-    first, ... = names
+    first, ... = $names
   }
 }
 
 like2 {
   MATCH
-    NUMBER_PLURAL << names >> LIST_LENGTH + num,
-    NUMBER_PLURAL << num
+    NUMBER_PLURAL << $names >> LIST_LENGTH + $num,
+    NUMBER_PLURAL << $num
   {
     :one, _ ->
       |{ first } likes your photo
-    :other, _ WHEN num == 0 ->
+    :other, _ WHEN $num == 0 ->
       |{ names } like your photo
     :other, :one ->
-      |{ ...names,  "1 other person" } like your photo
+      |{ ...$names,  "1 other person" } like your photo
     :other, :other ->
-      |{ ...names "{ num } other people" } like your photo
+      |{ ...$names "{ $num } other people" } like your photo
   } WHERE {
-    first, ... = names
+    first, ... = $names
   }
 }
 
@@ -143,21 +143,21 @@ like3 {
     _ ->
       |{ first, second, other-people } like your photo
   } WHERE {
-    first, second, ...rest = friends
-    total                  = (...friends, ...strangers) >> LIST_LENGTH
+    first, second, ...rest = $friends
+    total                  = (...$friends, ...$strangers) >> LIST_LENGTH
     other-people           = MATCH total >> NUMBER_PLURAL {
       _ WHEN total = 0 -> NONE
       :one             -> "1 other person"
       :other           -> "{ total } other people"
     } WHERE {
-      total = (...rest, ...strangers) >> LIST_LENGTH
+      total = (...rest, ...$strangers) >> LIST_LENGTH
     }
   }
 }
 
 apples {
-  MATCH num >> NUMBER_PLURAL {
+  MATCH $num >> NUMBER_PLURAL {
     :one   -> "An apple"
-    :other -> "{ num } apples"
+    :other -> "{ $num } apples"
   }
 }
