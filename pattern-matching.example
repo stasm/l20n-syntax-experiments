@@ -15,7 +15,7 @@ brand-name {
 brand-name {
   ^gender = :masculine
   match $1 {
-    :nominative OR NONE -> "Firefox"
+    :nominative or none -> "Firefox"
     :accusative         -> "Firefoksa"
   }
 }
@@ -54,8 +54,8 @@ space-available {
 
 space-available-intl1 {
   match $num >> number_plural {
-    :one  -> "{ UNIT DIGITAL SHORT << $num } disponible"
-    :many -> "{ UNIT DIGITAL SHORT << $num } disponibles"
+    :one  -> "{ number_unit type:digital style:short << $num } disponible"
+    :many -> "{ number_unit type:digital style:short << $num } disponibles"
   }
 }
 
@@ -64,7 +64,7 @@ space-available-intl2 {
     :one  -> "{ unit } disponible"
     :many -> "{ unit } disponibles"
   } where {
-    unit = $num >> UNIT DIGITAL AUTO SHORT
+    unit = $num >> number_unit type:digitial style:short
   }
 }
 
