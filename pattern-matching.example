@@ -71,10 +71,10 @@ space-available-intl2 {
 
 plural1 {
   match $1 {
-    1                          -> :one
-    _ when $1 % 100 in 10..19  -> :other
-    _ when $1 % 10 in 2..4     -> :few
-    _                          -> :other
+    1                        -> :one
+    _ if $1 % 100 in 10..19  -> :other
+    _ if $1 % 10 in 2..4     -> :few
+    _                        -> :other
   }
 }
 
@@ -103,7 +103,7 @@ like1 {
     :one ->
       "{ first } likes your photo"
     :other -> match $num >> number_plural {
-      _ when $num == 0 ->
+      _ if $num == 0 ->
         "{ $names } like your photo"
       :one ->
         "{ ...$names, "1 other person" } like your photo"
@@ -121,7 +121,7 @@ like2 {
   {
     :one, _ ->
       |{ first } likes your photo
-    :other, _ when $num == 0 ->
+    :other, _ if $num == 0 ->
       |{ names } like your photo
     :other, :one ->
       |{ ...$names,  "1 other person" } like your photo
@@ -136,7 +136,7 @@ like3 {
   match
     number_plural << total
   {
-    :one when first ->
+    :one if first ->
       |{ first } likes your photo
     :one ->
       |1 person likes your photo
@@ -146,9 +146,9 @@ like3 {
     first, second, ...rest = $friends
     total                  = (...$friends, ...$strangers) >> list_length
     other-people           = match total >> number_plural {
-      _ when total = 0 -> none
-      :one             -> "1 other person"
-      :other           -> "{ total } other people"
+      _ if total = 0 -> none
+      :one           -> "1 other person"
+      :other         -> "{ total } other people"
     } where {
       total = (...rest, ...$strangers) >> list_length
     }
