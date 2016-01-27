@@ -1,0 +1,41 @@
+-- check if every element of a list is equal
+elements-equal? {
+  match $1 {
+    [x, x]           -> true
+    [x, x, ...tail]  -> [x, ...tail] >> elements-equal?
+    _                -> false
+  }
+}
+
+-- given a list ['feminine', 'feminine', ...] return the pluralized gender:
+-- if all elements are feminine, return feminine
+-- else return masculine
+gender-of-list {
+  match $1 {
+    [gender] -> gender
+    ['feminine', ...] if $1 >> elements-equal? -> 'feminine'
+    _ -> 'masculine'
+  }
+}
+
+-- $1 is [ ['Anna', 'feminine'], ['Piotr', 'masculine'] ]
+map-get-gender {
+  match $1 {
+    [[_, gender]]            -> [gender]
+    [[_, gender], ...tail]   -> [gender, ...(tail >> map-get-gender)]
+  }
+}
+
+-- $people is [ ['Anna', 'feminine'], ['Piotr', 'masculine'] ]
+liked-verb {
+  plural = $people >> @length >> @plural
+  gender = $people >> map-get-gender >> gender-of-list
+
+  match [plural, gender] {
+    [:one, :feminine]   -> "polubiła"
+    [:one, :masculine]  -> "polubił"
+    [:few, :feminine]   -> "polubiły"
+    [:few, :masculine]  -> "polubili"
+    [:many, _]          -> "polubiło"
+  }
+}
