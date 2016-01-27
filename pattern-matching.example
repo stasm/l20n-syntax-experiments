@@ -60,11 +60,11 @@ space-available-intl1 {
 }
 
 space-available-intl2 {
+  unit = $num >> @unit type:digitial style:short
+
   match $num >> @plural {
     :one  -> "{ unit } disponible"
     :many -> "{ unit } disponibles"
-  } where {
-    unit = $num >> @unit type:digitial style:short
   }
 }
 
@@ -79,15 +79,15 @@ plural1 {
 }
 
 plural2 {
+  num      = $1
+  tens     = num % 10
+  hundreds = num % 100
+
   match num, tens, hundreds {
     1, ...       -> :one
     ..., 10..19  -> :other
     _, 2..4, _   -> :few
     _            -> :other
-  } where {
-    num      = $1
-    tens     = num % 10
-    hundreds = num % 100
   }
 }
 
@@ -99,6 +99,8 @@ plural2 {
 -- Anna, Nick and 5 other people like your photo
 
 like-names-num1 {
+  first, ... = $names
+
   match $names >> @length + $num >> @plural {
     :one ->
       "{ first } likes your photo"
@@ -109,12 +111,12 @@ like-names-num1 {
         "{ ...$names, "1 other person" } like your photo"
       :other ->
         "{ ...$names, "{ $num } other people" } like your photo"
-  } where {
-    first, ... = $names
   }
 }
 
 like-names-num2 {
+  first, ... = $names
+
   match
     @plural << $names >> @length + $num,
     @plural << $num
@@ -127,48 +129,43 @@ like-names-num2 {
       |{ ...$names,  "1 other person" } like your photo
     :other, :other ->
       |{ ...$names "{ $num } other people" } like your photo
-  } where {
-    first, ... = $names
   }
 }
 
 like-friends-strangers {
-  match
-    total >> @plural
-  {
+  first, second, ...rest = $friends
+  total-all              = (...$friends, ...$strangers) >> @length
+  total-other            = (...rest, ...$strangers) >> @length
+  other-people           = match total-other >> @plural {
+    _ if total-other = 0 -> none
+    :one           -> "1 other person"
+    :other         -> "{ total-other } other people"
+  }
+
+  match total-all >> @plural {
     :one if first ->
       |{ first } likes your photo
     :one ->
       |1 person likes your photo
     _ ->
       |{ first, second, other-people } like your photo
-  } where {
-    first, second, ...rest = $friends
-    total                  = (...$friends, ...$strangers) >> @length
-    other-people           = match total >> @plural {
-      _ if total = 0 -> none
-      :one           -> "1 other person"
-      :other         -> "{ total } other people"
-    } where {
-      total = (...rest, ...$strangers) >> @length
-    }
   }
 }
 
 like-names {
+  first, second, ...rest = $names
+  other-people-num       = rest >> @length
+  other-people           = match other-people-num >> @plural {
+    _ if other-people-num = 0 -> none
+    :one                      -> "1 other person"
+    :other                    -> "{ other-people-num } other people"
+  }
+
   match $names >> @length >> @plural {
     :one ->
       |{ first } likes your photo
     :other ->
       |{ first, second, other-people } like your photo
-  } where {
-    first, second, ...rest = $names
-    other-people-num       = rest >> @length
-    other-people           = match other-people-num >> @plural {
-      _ if other-people-num = 0 -> none
-      :one                      -> "1 other person"
-      :other                    -> "{ other-people-num } other people"
-    }
   }
 }
 
