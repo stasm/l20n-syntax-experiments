@@ -98,7 +98,7 @@ plural2 {
 -- Anna, Nick and 1 other person like your photo
 -- Anna, Nick and 5 other people like your photo
 
-like1 {
+like-names-num1 {
   match $names >> @length + $num >> @plural {
     :one ->
       "{ first } likes your photo"
@@ -114,7 +114,7 @@ like1 {
   }
 }
 
-like2 {
+like-names-num2 {
   match
     @plural << $names >> @length + $num,
     @plural << $num
@@ -132,7 +132,7 @@ like2 {
   }
 }
 
-like3 {
+like-friends-strangers {
   match
     total >> @plural
   {
@@ -151,6 +151,23 @@ like3 {
       :other         -> "{ total } other people"
     } where {
       total = (...rest, ...$strangers) >> @length
+    }
+  }
+}
+
+like-names {
+  match $names >> @length >> @plural {
+    :one ->
+      |{ first } likes your photo
+    :other ->
+      |{ first, second, other-people } like your photo
+  } where {
+    first, second, ...rest = $names
+    other-people-num       = rest >> @length
+    other-people           = match other-people-num >> @plural {
+      _ if other-people-num = 0 -> none
+      :one                      -> "1 other person"
+      :other                    -> "{ other-people-num } other people"
     }
   }
 }
