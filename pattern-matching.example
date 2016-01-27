@@ -54,13 +54,13 @@ space-available {
 
 space-available-intl1 {
   match $num >> @plural {
-    :one  -> "{ $num >> @unit type:digital style:short } disponible"
-    :many -> "{ $num >> @unit type:digital style:short } disponibles"
+    :one  -> "{ $num >> @unit type :digital style :short } disponible"
+    :many -> "{ $num >> @unit type :digital style :short } disponibles"
   }
 }
 
 space-available-intl2 {
-  unit = $num >> @unit type:digitial style:short
+  unit = $num >> @unit type :digitial style :short
 
   match $num >> @plural {
     :one  -> "{ unit } disponible"
