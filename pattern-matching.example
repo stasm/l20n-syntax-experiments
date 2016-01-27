@@ -83,11 +83,11 @@ plural2 {
   tens     = num % 10
   hundreds = num % 100
 
-  match num, tens, hundreds {
-    1, ...       -> :one
-    ..., 10..19  -> :other
-    _, 2..4, _   -> :few
-    _            -> :other
+  match [num, tens, hundreds] {
+    [1, ...]       -> :one
+    [..., 10..19]  -> :other
+    [_, 2..4, _]   -> :few
+    _              -> :other
   }
 }
 
@@ -99,7 +99,7 @@ plural2 {
 -- Anna, Nick and 5 other people like your photo
 
 like-names-num1 {
-  first, ... = $names
+  [first, ...] = $names
 
   match $names >> @length + $num >> @plural {
     :one ->
@@ -108,14 +108,14 @@ like-names-num1 {
       _ if $num == 0 ->
         "{ $names } like your photo"
       :one ->
-        "{ ...$names, "1 other person" } like your photo"
+        "{ [...$names, "1 other person"] } like your photo"
       :other ->
-        "{ ...$names, "{ $num } other people" } like your photo"
+        "{ $names ++ ["{ $num } other people"] } like your photo"
   }
 }
 
 like-names-num2 {
-  first, ... = $names
+  [first, ...] = $names
 
   match
     @plural << $names >> @length + $num,
@@ -126,17 +126,17 @@ like-names-num2 {
     :other, _ if $num == 0 ->
       |{ names } like your photo
     :other, :one ->
-      |{ ...$names,  "1 other person" } like your photo
+      |{ [...$names,  "1 other person"] } like your photo
     :other, :other ->
-      |{ ...$names "{ $num } other people" } like your photo
+      |{ [...$names "{ $num } other people"] } like your photo
   }
 }
 
 like-friends-strangers {
-  first, second, ...rest = $friends
-  total-all              = (...$friends, ...$strangers) >> @length
-  total-other            = (...rest, ...$strangers) >> @length
-  other-people           = match total-other >> @plural {
+  [first, second, ...rest] = $friends
+  total-all                = [...$friends, ...$strangers] >> @length
+  total-other              = rest ++ $strangers >> @length
+  other-people             = match total-other >> @plural {
     _ if total-other = 0 -> none
     :one           -> "1 other person"
     :other         -> "{ total-other } other people"
@@ -148,14 +148,14 @@ like-friends-strangers {
     :one ->
       |1 person likes your photo
     _ ->
-      |{ first, second, other-people } like your photo
+      |{ [first, second, other-people] } like your photo
   }
 }
 
 like-names {
-  first, second, ...rest = $names
-  other-people-num       = rest >> @length
-  other-people           = match other-people-num >> @plural {
+  [first, second, ...rest] = $names
+  other-people-num         = rest >> @length
+  other-people             = match other-people-num >> @plural {
     _ if other-people-num = 0 -> none
     :one                      -> "1 other person"
     :other                    -> "{ other-people-num } other people"
@@ -165,7 +165,7 @@ like-names {
     :one ->
       |{ first } likes your photo
     :other ->
-      |{ first, second, other-people } like your photo
+      |{ [first, second, other-people] } like your photo
   }
 }
 
@@ -177,7 +177,7 @@ like-names {
 -- Anna, Paweł, Kasia i 5 innych osób lubi twoje zdjęcie
 
 like-names-flat {
-  pierwsza, druga, trzecia, ...reszta = $names
+  [pierwsza, druga, trzecia, ...reszta] = $names
   reszta-liczba = reszta >> @length
   inne = match reszta-liczba >> @plural {
     _ if reszta-liczba == 0 -> none
@@ -186,22 +186,25 @@ like-names-flat {
     :many                   -> "{ reszta-liczba } innych osób"
   }
 
-  match $names >> @length, reszta-liczba >> @plural {
-    1, _ ->
+  match [
+    $names >> @length,
+    reszta-liczba >> @plural 
+  ] {
+    [1, _] ->
       |{ pierwsza } lubi twoje zdjęcie
-    _, _ if reszta-liczba == 0 ->
+    [_, _] if reszta-liczba == 0 ->
       |{ $names } lubią twoje zdjęcie
-    -, :one ->
-      |{ pierwsza, druga, trzecia, inne } lubi twoje zdjęcie
-    -, :few ->
-      |{ pierwsza, druga, trzecia, inne } lubią twoje zdjęcie
-    -, :many ->
-      |{ pierwsza, druga, trzecia, inne } lubi twoje zdjęcie
+    [_, :one] ->
+      |{ [pierwsza, druga, trzecia, inne] } lubi twoje zdjęcie
+    [_, :few] ->
+      |{ [pierwsza, druga, trzecia, inne] } lubią twoje zdjęcie
+    [_, :many] ->
+      |{ [pierwsza, druga, trzecia, inne] } lubi twoje zdjęcie
   }
 }
 
 like-names-nested {
-  pierwsza, druga, trzecia, ...reszta = $names
+  [pierwsza, druga, trzecia, ...reszta] = $names
   reszta-liczba = reszta >> @length
   inne = match reszta-liczba >> @plural {
     _ if reszta-liczba == 0 -> none
@@ -217,11 +220,11 @@ like-names-nested {
       _ if reszta-liczba == 0 ->
         |{ $names } lubią twoje zdjęcie
       :one ->
-        |{ pierwsza, druga, trzecia, inne } lubi twoje zdjęcie
+        |{ [pierwsza, druga, trzecia, inne] } lubi twoje zdjęcie
       :few ->
-        |{ pierwsza, druga, trzecia, inne } lubią twoje zdjęcie
+        |{ [pierwsza, druga, trzecia, inne] } lubią twoje zdjęcie
       :many ->
-        |{ pierwsza, druga, trzecia, inne } lubi twoje zdjęcie
+        |{ [pierwsza, druga, trzecia, inne] } lubi twoje zdjęcie
     }
   }
 }
