@@ -7,13 +7,13 @@ brand-name {
 -local-message { "This won't be considered by compare-locales." }
 
 brand-name {
-  ^gender  = :feminine
-  ^animate = false
+  trait gender  = :feminine
+  trait animate = false
   "Aurora"
 }
 
 brand-name {
-  ^gender = :masculine
+  trait gender = :masculine
   match $1 {
     :nominative or none -> "Firefox"
     :accusative         -> "Firefoksa"
@@ -29,7 +29,7 @@ html-welcome {
 }
 
 crashed {
-  match brand-name << ^gender {
+  match brand-name << trait gender {
     :masculine -> "{ brand-name } uległ awarii"
     :feminine  -> "{ brand-name } uległa awarii"
   }
