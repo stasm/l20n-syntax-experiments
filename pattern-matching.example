@@ -169,6 +169,63 @@ like-names {
   }
 }
 
+-- Anna lubi twoje zdjęcie
+-- Anna i Paweł lubią twoje zdjęcie
+-- Anna, Paweł i Kasia lubią twoje zdjęcie
+-- Anna, Paweł, Kasia i 1 inna osoba lubi twoje zdjęcie
+-- Anna, Paweł, Kasia i 2 inne osoby lubią twoje zdjęcie
+-- Anna, Paweł, Kasia i 5 innych osób lubi twoje zdjęcie
+
+like-names-flat {
+  pierwsza, druga, trzecia, ...reszta = $names
+  reszta-liczba = reszta >> @length
+  inne = match reszta-liczba >> @plural {
+    _ if reszta-liczba == 0 -> none
+    :one                    -> "1 inna osoba"
+    :few                    -> "{ reszta-liczba } inne osoby"
+    :many                   -> "{ reszta-liczba } innych osób"
+  }
+
+  match $names >> @length, reszta-liczba >> @plural {
+    1, _ ->
+      |{ pierwsza } lubi twoje zdjęcie
+    _, _ if reszta-liczba == 0 ->
+      |{ $names } lubią twoje zdjęcie
+    -, :one ->
+      |{ pierwsza, druga, trzecia, inne } lubi twoje zdjęcie
+    -, :few ->
+      |{ pierwsza, druga, trzecia, inne } lubią twoje zdjęcie
+    -, :many ->
+      |{ pierwsza, druga, trzecia, inne } lubi twoje zdjęcie
+  }
+}
+
+like-names-nested {
+  pierwsza, druga, trzecia, ...reszta = $names
+  reszta-liczba = reszta >> @length
+  inne = match reszta-liczba >> @plural {
+    _ if reszta-liczba == 0 -> none
+    :one                    -> "1 inna osoba"
+    :few                    -> "{ reszta-liczba } inne osoby"
+    :many                   -> "{ reszta-liczba } innych osób"
+  }
+
+  match $names >> @length {
+    1 ->
+      |{ pierwsza } lubi twoje zdjęcie
+    _ -> match reszta-liczba >> @plural {
+      _ if reszta-liczba == 0 ->
+        |{ $names } lubią twoje zdjęcie
+      :one ->
+        |{ pierwsza, druga, trzecia, inne } lubi twoje zdjęcie
+      :few ->
+        |{ pierwsza, druga, trzecia, inne } lubią twoje zdjęcie
+      :many ->
+        |{ pierwsza, druga, trzecia, inne } lubi twoje zdjęcie
+    }
+  }
+}
+
 apples {
   match $num >> @plural {
     :one   -> "An apple"
