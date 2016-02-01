@@ -12,10 +12,21 @@ brand-name {
   "Aurora"
 }
 
+-- implicit positional arg $1
 brand-name {
   trait gender = :masculine
   match $1 {
-    :nominative | none -> "Firefox"
+    :nominative | none  -> "Firefox"
+    :accusative         -> "Firefoksa"
+  }
+}
+
+-- alternative:
+-- explicit positional arg case
+brand-name case {
+  trait gender = :masculine
+  match case {
+    :nominative | none  -> "Firefox"
     :accusative         -> "Firefoksa"
   }
 }
@@ -29,7 +40,7 @@ html-welcome {
 }
 
 crashed {
-  match brand-name << trait gender {
+  match trait gender >> brand-name {
     :masculine -> "{ brand-name } uległ awarii"
     :feminine  -> "{ brand-name } uległa awarii"
   }
@@ -37,8 +48,8 @@ crashed {
 
 space-available {
   match $num >> @plural {
-    :one  -> "{ $num }{ -byte-unit << $unit } disponible"
-    :many -> "{ $num }{ -byte-unit << $unit } disponibles"
+    :one  -> "{ $num }{ $unit >> -byte-unit } disponible"
+    :many -> "{ $num }{ $unit >> -byte-unit } disponibles"
   }
 }
 
@@ -110,7 +121,7 @@ like-names-num1 {
       :one ->
         "{ [...$names, "1 other person"] } like your photo"
       :other ->
-        "{ $names ++ ["{ $num } other people"] } like your photo"
+        "{ [...$names, "{ $num } other people"] } like your photo"
   }
 }
 
@@ -118,8 +129,8 @@ like-names-num2 {
   [first, ...] = $names
 
   match [
-    @plural << $names >> @length + $num,
-    @plural << $num
+    $names >> @length + $num >> @plural,
+    $num >> @plural
   ] {
     [:one, _] ->
       |{ first } likes your photo
@@ -135,7 +146,7 @@ like-names-num2 {
 like-friends-strangers {
   [first, second, ...rest] = $friends
   total-all                = [...$friends, ...$strangers] >> @length
-  total-other              = rest ++ $strangers >> @length
+  total-other              = [...rest, $strangers] >> @length
   other-people             = match total-other >> @plural {
     0      -> none
     :one   -> "1 other person"
@@ -156,9 +167,9 @@ like-names {
   [first, second, ...rest] = $names
   other-people-num         = rest >> @length
   other-people             = match other-people-num >> @plural {
-    _ if other-people-num = 0 -> none
-    :one                      -> "1 other person"
-    :other                    -> "{ other-people-num } other people"
+    0       -> none
+    :one    -> "1 other person"
+    :other  -> "{ other-people-num } other people"
   }
 
   match $names >> @length >> @plural {
@@ -192,7 +203,7 @@ like-names-flat {
   ] {
     [1, _] ->
       |{ pierwsza } lubi twoje zdjęcie
-    [_, _] if reszta-liczba == 0 ->
+    [_, 0] ->
       |{ $names } lubią twoje zdjęcie
     [_, :one] ->
       |{ [pierwsza, druga, trzecia, inne] } lubi twoje zdjęcie
@@ -241,7 +252,6 @@ apples {
 
 -- $num is the number of minutes remaining, e.g. 2
 time-remaining {
-  -- minutes is the string '2 minuty'
   minutes = $num >> @unit unit::minute style::long
 
   match minutes {
