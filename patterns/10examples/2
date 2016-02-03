@@ -1,0 +1,17 @@
+-- Najlepsze czasy na 200m miał Janek: 23s, 24s i 22.5s.
+-- distance :: Number
+-- times :: [Number]
+
+
+best-times = Najlepsze czasy na {distance,unit type:meter} miał Janek: \
+  {times,list}.
+
+<bestTimes """
+  Najlepsze czasy na {{ @unit($distance, type:"meter") }} miał Janek:
+  {{ @map(@unit(type:"second"), $times }}
+""">
+
+best-times {
+  |Najlepsze czasy na {$distance >> unit type::meter} miał Janek:
+  |{$times >> @map (@unit type::second)}.
+}

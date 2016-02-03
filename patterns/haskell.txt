@@ -1,0 +1,79 @@
+brand-name = "Firefox"
+
+brand-name ^gender = :feminine
+brand-name ^animate = FALSE
+brand-name = "Aurora"
+
+brand-name ^gender = :masculine
+brand-name case
+  | case == :nominative = "Firefox"
+  | case == :accusative = "Firefoksa"
+  | otherwise           = "Firefox"
+
+crashed
+  | gender == :masculine = "$(brand-name) uległ awarii"
+  | gender == :feminine  = "$(brand-name) uległa awarii"
+  where gender = $1
+
+space-available {
+  MATCH $num |> NUMBER_PLURAL {
+    :one  -> "{ $num }{ byte-unit $unit } disponible"
+    :many -> "{ $num }{ byte-unit $unit } disponibles"
+  }
+}
+
+byte-unit {
+  MATCH $1 {
+    "B"  -> "o"
+    "KB" -> "Ko"
+    "MB" -> "Mo"
+    "GB" -> "Go"
+    ANY  -> "Oops"
+  }
+}
+
+plural {
+  MATCH $1 {
+    1                              -> :one
+    ANY WHEN $1 % 100 IN (10..19)  -> :other
+    ANY WHEN $1 % 10 IN (2..4)     -> :few
+    ANY                            -> :other
+  }
+}
+
+
+-- Anna likes your photo
+-- Anna and Nick like your photo
+-- Anna and 6 other people like your photo
+-- Anna, Nick and 1 other person like your photo
+-- Anna, Nick and 5 other people like your photo
+
+like1 {
+  MATCH NUMBER_PLURAL (LIST_LENGTH $names + $num) {
+    :one ->
+      "{ LIST_FIRST $names } likes your photo"
+    :other -> MATCH NUMBER_PLURAL $num {
+      ANY WHEN $num = 0 ->
+        "{ LIST_FORMAT $names } like your photo"
+      :one ->
+        "{ LIST_FORMAT $names "1 other person" } like your photo"
+      :other ->
+        "{ LIST_FORMAT $names "{ $num } other people" } like your photo"
+  }
+}
+
+like2 {
+  MATCH (
+    NUMBER_PLURAL (LIST_LENGTH $names + $num),
+    NUMBER_PLURAL $num
+  ) {
+    (:one, ANY) ->
+      |{ LIST_FIRST $names } likes your photo
+    (:other, ANY) WHEN $num = 0 ->
+      |{ LIST_FORMAT $names } like your photo
+    (:other, :one) ->
+      |{ LIST_FORMAT $names "1 other person" } like your photo
+    (:other, :other) ->
+      |{ LIST_FORMAT $names "{ $num } other people" } like your photo
+  }
+}

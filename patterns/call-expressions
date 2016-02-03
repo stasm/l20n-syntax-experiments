@@ -1,0 +1,59 @@
+<foo "Hello {{ @intl.formatNumber($v, {currency: 'dollar'}) }}">
+21:07 <gandalf> Anna @intl.unitFormat($v, {'type': 'digital', style: 'short'});
+21:07 <gandalf> Anna @intl.unitSelectAndFormat($v, {'type': 'digital', style: 'short'});
+21:11 <gandalf> @intl.relativeTimeFormat($time, {style: 'narrow', rounding: 'aggresive'});
+21:13 <gandalf> @intl.ListFormat($v[0], $v[1], $v[3], andOther[@intl.pluralFormat($v[4:]])
+21:17 <gandalf> arraySlice($v, 0, 3)
+21:17 <gandalf> $v[0:3]
+21:17 <stas> listFormat($v, other[..])
+21:19 <gandalf> StringFormat.truncate()
+21:19 <gandalf> ;)
+21:21 <gandalf> {{ $v|unitFormat(unit: 'digital', style:'narrow') }}
+
+(NUMBER_FORMAT $num CURRENCY :dollar)
+(UNIT_FORMAT $num TYPE :digital STYLE short)
+(LIST_FORMAT $names (other-people (PLURAL $rest)))
+
+$(NUMBER_FORMAT $(num) CURRENCY=dollar)
+$(UNIT_FORMAT $(num) TYPE digital STYLE short)
+$(LIST_FORMAT $(names) $(-other-people $(PLURAL $(rest)))
+
+(LIST_FORMAT (names) (-other-people (PLURAL (rest)))
+
+LIST_FORMAT names (-other-people (PLURAL rest))
+
+LIST_FORMAT(names -other-people(PLURAL(rest)))
+
+(names, (rest AS PLURAL) OF -other-people) AS LIST
+(names AS ELEMENTS, -other-people rest AS PLURAL) AS LIST
+
+num AS CURRENCY DOLLAR
+num AS UNIT DIGITAL SHORT
+num AS UNIT AUTO DIGITAL SHORT
+
+num >> UNIT DIGITAL AUTO SHORT
+val >> CURRENCY DOLLAR
+
+PLURAL << (num, genders)
+PLURAL << num genders
+PLURAL << num, genders
+
+names >> LIST_LENGTH + num >> NUMBER_PLURAL
+(LIST_LENGTH << names) + num >> NUMBER_PLURAL
+NUMBER_PLURAL << (LIST_LENGTH << names) + num
+NUMBER_PLURAL << names >> LIST_LENGTH + num
+
+-gender >> brand-name
+brand-name << -gender
+
+:plural :accusative >> brand-name
+(:plural, :accusative) >> brand-name
+
+brand-name {
+  match $1, $2 {
+    singular OR NONE, nominative OR NONE -> "Firefox"
+    singular, accusative                 -> "Firefoksa"
+    plural, nominative OR NONE           -> "Firefoksy"
+    plural, accusative                   -> "Firefoksy"
+  }
+}

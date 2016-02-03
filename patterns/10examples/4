@@ -1,0 +1,26 @@
+-- 4) Jutro masz dwa spotkania, o 15:00 i o 17:30
+
+-- NUM :: Number
+-- TIMES :: [Date]
+
+tomorrow = {NUM, plural, \
+  =0{Nie masz jutro żadnych spotkań} \
+  =1{Jutro masz jedno spotkanie o {TIMES,list of:time,short}} \
+  few{Jutro masz # spotkania, o {TIMES, list of:time,short}} \
+  many{Jutro masz # spotkań, o {TIMES, list of:time,short}}}
+
+<tomorrow[@plural($NUM)] {
+  zero: "Nie masz jutro żadnych spotkań",
+  one: "Jutro masz jedno spotkanie o {{@list($TIMES, of:"time,short")}}",
+  few: "Jutro masz {{$NUM}} spotkania o {{@list($TIMES, of:"time,short")}}",
+  many: "Jutro masz {{$NUM}} spotkań o {{@list($TIMES, of:"time,short")}}",
+}>
+
+tomorrow {
+  match NUM >> @plural {
+    0     -> "Nie masz jutro żadnych spotkań"
+    1     -> "Jutro masz jedno spotkanie o {TIMES >> @map (@time type::short)}"
+    :few  -> "Jutro masz {NUM} spotkania, o {TIMES >> @map (@time type::short)}"
+    :many -> "Jutro masz {NUM} spotkań, o {TIMES >> @map (@time type::short)}"
+  }
+}

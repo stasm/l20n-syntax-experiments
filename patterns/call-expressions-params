@@ -1,0 +1,15 @@
+NUM >> Number style: "decimal"
+NUM >> Number style: :decimal
+NUM >> Number style:"decimal"
+NUM >> Number style::decimal
+
+
+Map (Unit style::decimal) RESULTS
+Map (Unit style::decimal) << RESULTS
+Map << Unit style::decimal << RESULTS
+
+RESULTS >> Map (Unit style::decimal)
+
+RESULTS >> (Map << Unit style::decimal)
+
+Unit style::decimal >> Map << RESULTS

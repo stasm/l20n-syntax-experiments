@@ -1,0 +1,23 @@
+-- Pozostało 10 minut - 18.7 MB z 1.4 GB
+-- MINUTES :: Date
+-- DATA_DONE :: Number
+-- DATA_TOTAL :: Number
+
+
+time-remaining = {MINUTES, plural, \
+  =0{Gotowe!} \
+  =1{Pozostała jedna minuta - {DATA_DONE,unit type:digital} z {DATA_DONE, unit type:digital} \
+  few{Pozostały # minuty - {DATA_DONE,unit type:digital} z {DATA_DONE, unit type:digital} \
+  many{Pozostało # minut - {DATA_DONE,unit type:digital} z {DATA_DONE, unit type:digital}
+
+
+time-remaining {
+  minutes = $num >> @unit unit::minute style::long
+
+  match minutes {
+    0      -> "Gotowe!"
+    1      -> "Pozostała jedna minuta - {DATA_DONE "
+    :few   -> "Pozostały { minutes } do końca"
+    _      -> "Pozostało { minutes } do końca"
+  }
+}
