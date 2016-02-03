@@ -1,0 +1,119 @@
+Variants and Traits
+===================
+
+In L20n, we have historically conflated the following two notions:
+
+ - variants of a message which are chosen based on the value of a certain 
+   criterion, like the plural category returned by the plural rule, and
+
+ - different grammatical cases and properties (from now on referred to as 
+   'traits').
+
+While variants need a criterion ('index') to create programmable behavior, 
+traits are just data points without any selection mechanism.  Traits 
+are supposed to be accessed from the outside by other messages, whereas 
+variants shouldn't—they should always resolve to the right variant using the 
+given index.
+
+It is then perhaps confusing to be using the same syntax for both if we only 
+want one of them (traits) to be accessible from the outside of the message.
+
+Imagine the following syntax:
+
+    brand-name::gender = feminine
+    brand-name = {
+     *[masculine] Aurora
+      [locative]  Aurorze
+    }
+
+    about = O { brand-name[locative] }
+
+    crashed = { brand-name::gender ->
+     *[masculine] { brand-name } uległ awarii.
+      [feminine]  { brand-name } uległa awarii.
+    }
+
+We need a way to access the `[locative]` variant just as we need a way to 
+access the `gender` trait.  There's no need, however, to access the 
+`[feminine]` variant of `crashed` as it should be always resolved according to 
+the value of its index.  And yet, the above syntax allows other messages to 
+access variants of `crashed` with `crashed[masculine]` and `crashed[feminine]`.
+
+It occurs to me that all grammatical facets of a message (like the grammatical 
+cases of `brand-name`) fit into the model of a trait.  Consider the following 
+example:
+
+    brand-name             = Aurora
+    brand-name::nominative = Aurora
+    brand-name::locative   = Aurorze
+    brand-name::gender     = feminine
+    brand-name::animate    = true
+
+    about = O { brand-name::locative }
+
+    crashed = { brand-name::gender ->
+      [masculine] { brand-name } uległ awarii.
+      [feminine]  { brand-name } uległa awarii.
+    }
+
+This is also explicit in that if you don't ask for a specific trait you'll get 
+the nominative case `Aurora`.  Comparison tools like compare-locales would 
+ignore parts of keys from `::` to the end of the key.  Defining a trait 
+without first having defined the message would be prohibited.
+
+
+Default Values
+--------------
+
+This proposal also solves one other conflation: the one of the default variant.  
+The syntax should differentiate between the following three scenarios:
+
+  1. no index was defined,
+  2. the index was defined but it didn't resolve cleanly,
+  3. the index resolved but no variant matched.
+
+The current default variant semantics cover cases #1 and #3.  Traits make the case #1 go away and turn case #3 into a catch-all pattern.
+
+Ad. #1  With traits, a pattern matcher without an index is a syntax error. The 
+following is thus not valid syntax:
+
+    new-notifications = {
+      [0]    Brak nowych powiadomień.
+      [1]    Jedno nowe powiadomienie.
+      [few]  { $NUM } nowe powiadomienia.
+      [many] { $NUM } nowych powiadomień.
+    }
+
+If you're tempted to write that it means you want traits instead. Since
+you're not providing an explicit selector for choosing one of the variants, 
+you will want to access the variants from the outside of the message.
+
+
+Ad. #2  If the index didn't resolve cleanly L20n shouldn't make any assumptions 
+about which variant to show.  In the following example, if the developer makes 
+a mistake and passes a `NaN` as `$NUM`, the `PLURAL` function will throw an 
+error.  In this case we shouldn't be showing the `[many]` variant which is here 
+marked as the default because it might be factually incorrect.  L20n should 
+instead fall back to the next supported language or show the id of the message. 
+
+    new-notifications = { PLURAL($NUM) ->
+      [0]    Brak nowych powiadomień.
+      [1]    Jedno nowe powiadomienie.
+      [few]  { $NUM } nowe powiadomienia.
+     *[many] { $NUM } nowych powiadomień.
+    }
+
+The default variant defined with `*` creates a false sense of security.  If 
+`PLURAL($NUM)` breaks then the translation is effectively broken.
+
+Ad. #3  Lastly, for cases where the index resolved cleanly, the syntax should 
+offer a catch-all construct to make it easier to create translation variants 
+which cover all possible cases.  In the following example the empty `[]` key 
+denotes the catch-all variant.
+
+    new-notifications = { PLURAL($NUM) ->
+      [0]    Brak nowych powiadomień.
+      [1]    Jedno nowe powiadomienie.
+      [few]  { $NUM } nowe powiadomienia.
+      []     { $NUM } nowych powiadomień.
+    }
