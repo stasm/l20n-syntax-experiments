@@ -1,0 +1,48 @@
+# $GENDER (String) Gender of friend
+# $NUM    (Number) Number of common friends
+common-friends = { $GENDER ->
+  [masculine] { PLURAL($NUM) ->
+    [0]    You don't have any common friends with him.
+    [1]    You have one common friend with him. 
+   *[many] You have { $NUM } common friends with him.
+  }
+  [feminine] { PLURAL($NUM) ->
+    [0]    You don't have any common friends with her.
+    [1]    You have one common friend with her. 
+   *[many] You have { $NUM } common friends with her.
+  }
+ *[unknown] { PLURAL($NUM) ->
+    [0]    You don't have any common friends with them.
+    [1]    You have one common friend with them. 
+   *[many] You have { $NUM } common friends with them.
+  }
+}
+
+party-invites = { $GENDER_OF_HOST ->
+  [female] {
+    PLURAL($NUM_GUESTS) -> {
+      [0]     { $HOST } does not give a party.
+      [1]     { $HOST } invites { $GUEST } to her party.
+      [2]     { $HOST } invites { $GUEST } and one other person to her party.
+     *[other]
+        |{ $HOST } invites { $GUEST } and { OFFSET($NUM-GUESTS, 1) } other people
+        |to her party.
+    }
+  }
+  [male] {
+    PLURAL($NUM_GUESTS) -> {
+      [0]     { $HOST } does not give a party.
+      [1]     { $HOST } invites { $GUEST } to his party.
+      [2]     { $HOST } invites { $GUEST } and one other person to her party.
+     *[other] { $HOST } invites { $GUEST } and { OFFSET($NUM_GUESTS, 1) } other people to his party.
+    }    
+  }
+  [other] {
+    PLURAL($NUM_GUESTS) -> {
+      [0]     { $HOST } does not give a party.
+      [1]     { $HOST } invites { $GUEST } to their party.
+      [2]     { $HOST } invites { $GUEST } and one other person to their party.
+     *[other] { $HOST } invites { $GUEST } and { OFFSET($NUM_GUESTS, 1) } other people to their party.
+    }    
+  }
+}

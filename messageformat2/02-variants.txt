@@ -1,0 +1,30 @@
+brand-name:gender = feminine
+brand-name = {
+ *[masculine] Aurora
+  [locative]  Aurorze
+}
+
+about = O { brand-name[locative] }
+
+crashed-1 = { brand-name:gender ->
+ *[masculine] { brand-name } uległ awarii.
+  [feminine]  { brand-name } uległa awarii.
+}
+
+crashed-2 = { brand-name } { brand-name:gender ->
+ *[masculine] uległ
+  [feminine]  uległa
+} awarii.
+
+new-notifications = { PLURAL($NUM) ->
+  [0]    Brak nowych powiadomień.
+  [1]    Jedno nowe powiadomienie.
+  [few]  { $NUM } nowe powiadomienia.
+ *[many] { $NUM } nowych powiadomień.
+}
+
+space-available = { PLURAL($NUM) ->
+  [0]      Il n'y a plus de place.
+  [one]    { UNIT($NUM, TYPE DIGITAL, STYLE SHORT} disponible.
+ *[other]  { UNIT($NUM, TYPE DIGITAL, STYLE SHORT} disponibles.
+}
