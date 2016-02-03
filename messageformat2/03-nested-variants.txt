@@ -11,7 +11,7 @@ common-friends = { $GENDER ->
     [1]    You have one common friend with her. 
    *[many] You have { $NUM } common friends with her.
   }
- *[unknown] { PLURAL($NUM) ->
+ *[] { PLURAL($NUM) ->
     [0]    You don't have any common friends with them.
     [1]    You have one common friend with them. 
    *[many] You have { $NUM } common friends with them.

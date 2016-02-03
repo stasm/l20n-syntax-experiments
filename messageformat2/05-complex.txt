@@ -3,7 +3,7 @@ liked-photo = { PLURAL($PEOPLE) ->
     [2]     { $PEOPLE } lubią 
     [3]     { TAKE(2, $PEOPLE) "jedna inna osoba" } lubią
 
-    *[]     { TAKE(2, $PEOPLE),  { PLURAL(DROP(2, $PEOPLE)) ->  
+    *[]     { TAKE(2, $PEOPLE) { PLURAL(DROP(2, $PEOPLE)) ->
                 [1]    jedna inna osoba lubią
                 [few]  { LEN(DROP(2, $PEOPLE)) } inne osoby lubią
                *[many] { LEN(DROP(2, $PEOPLE)) } innych osób lubi
