@@ -1,5 +1,5 @@
 liked-photo = { PLURAL($PEOPLE) ->
-    [1]     { $PEOPLE } lubi.
+    [1]     { $PEOPLE } lubi
     [2]     { $PEOPLE } lubią 
     [3]     { TAKE(2, $PEOPLE) "jedna inna osoba" } lubią
 

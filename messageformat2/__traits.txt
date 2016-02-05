@@ -22,8 +22,8 @@ Imagine the following syntax:
 
     brand-name::gender = feminine
     brand-name = {
-     *[masculine] Aurora
-      [locative]  Aurorze
+     *[nominative] Aurora
+      [locative]   Aurorze
     }
 
     about = O { brand-name[locative] }
