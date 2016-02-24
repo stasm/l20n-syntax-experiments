@@ -1,5 +1,5 @@
-MessageFormat 2.0
-=================
+FTL (FormatToLanguage)
+======================
 
 This proposal aims at solving ICU MessageFormat's limitations.
 
