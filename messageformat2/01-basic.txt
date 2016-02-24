@@ -12,7 +12,7 @@ html-welcome =
   |from Mozilla. Our mission is to promote openness, innovation and 
   |opportunity by keeping the power of the Web in your hands.
 
-wifi-connected = You are now connected to { $SSID }.
+wifi-connected = You are now connected to { $ssid }.
 
-space-available = { UNIT($NUM) } available.
-space-available = { UNIT($NUM, TYPE DIGITAL, STYLE SHORT) } available.
+space-available = { UNIT($num) } available.
+space-available = { UNIT($num, TYPE DIGITAL, STYLE SHORT) } available.
