@@ -61,6 +61,20 @@ the nominative case `Aurora`.  Comparison tools like compare-locales would
 ignore parts of keys from `::` to the end of the key.  Defining a trait 
 without first having defined the message would be prohibited.
 
+__Update on Feb 26, 2016:__ In `f4c51cd` I implemented Dave's proposal:
+
+    brand-name =
+     *[nominative] Aurora
+      [locative]   Aurorze
+      [gender]     feminine
+
+    about = O { brand-name[locative] }
+
+    crashed = { brand-name[gender] ->
+      [masculine] { brand-name } uległ awarii.
+      [feminine]  { brand-name } uległa awarii.
+    }
+
 
 Default Values
 --------------

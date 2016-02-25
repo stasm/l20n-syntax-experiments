@@ -1,17 +1,16 @@
-brand-name:gender = feminine
-brand-name = {
- *[masculine] Aurora
-  [locative]  Aurorze
-}
+brand-name =
+ *[nominative] Aurora
+  [locative]   Aurorze
+  [gender]     feminine
 
 about = O { brand-name[locative] }
 
-crashed-1 = { brand-name:gender ->
+crashed-1 = { brand-name[gender] ->
  *[masculine] { brand-name } uległ awarii.
   [feminine]  { brand-name } uległa awarii.
 }
 
-crashed-2 = { brand-name } { brand-name:gender ->
+crashed-2 = { brand-name } { brand-name[gender] ->
  *[masculine] uległ
   [feminine]  uległa
 } awarii.
