@@ -25,6 +25,6 @@ new-notifications = { PLURAL($num) ->
 
 space-available = { PLURAL($num) ->
   [0]      Il n'y a plus de place.
-  [one]    { UNIT($num, TYPE DIGITAL, STYLE SHORT} disponible.
- *[other]  { UNIT($num, TYPE DIGITAL, STYLE SHORT} disponibles.
+  [one]    { UNIT($num, TYPE=DIGITAL, STYLE=SHORT} disponible.
+ *[other]  { UNIT($num, TYPE=DIGITAL, STYLE=SHORT} disponibles.
 }
