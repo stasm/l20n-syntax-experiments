@@ -8,9 +8,9 @@ about = About { brand-name }
 crashed = { brand-name } has crashed.
 
 html-welcome =
-  |Welcome to <a>{ brand-name }</a>, the free and open source operating system 
-  |from Mozilla. Our mission is to promote openness, innovation and 
-  |opportunity by keeping the power of the Web in your hands.
+  | Welcome to <a>{ brand-name }</a>, the free and open source operating system 
+  | from Mozilla. Our mission is to promote openness, innovation and 
+  | opportunity by keeping the power of the Web in your hands.
 
 wifi-connected = You are now connected to { $ssid }.
 

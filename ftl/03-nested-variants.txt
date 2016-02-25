@@ -25,8 +25,8 @@ party-invites = { $gender_of_host ->
       [1]     { $host } invites { $guest } to her party.
       [2]     { $host } invites { $guest } and one other person to her party.
      *[other]
-        |{ $host } invites { $guest } and { OFFSET($num-guests, 1) } other people
-        |to her party.
+        | { $host } invites { $guest } and { OFFSET($num_guests, 1) } other people
+        | to her party.
     }
   }
   [male] {

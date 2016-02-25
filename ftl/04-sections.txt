@@ -8,11 +8,8 @@ open-label = File
 edit-label = Edit
 
 
-[[ help
-
-   This section provides help text for the UI.
-]]
+[[ help ]]
 
 how-to-open-new-file =
-  |In order to open a new file, choose { menu/open-label } from 
-  |the { menu/file-label } menu.
+  | In order to open a new file, choose { menu/open-label } from 
+  | the { menu/file-label } menu.
