@@ -1,0 +1,44 @@
+# FTL has two kind of string literals: inline and block strings.
+
+# Inline strings can be optionally delimited with double quotes.
+foo-bar =  Foo Bar
+foo-bar = "Foo Bar"
+
+# Literal double quotes must be escaped regardless of whether the string is 
+# delimited with quotes or not.
+foo-bar =  Foo \"Bar\"
+foo-bar = "Foo \"Bar\""
+
+# Block strings must start with a pipe (`|`) or a member key (`[key]`).  They 
+# run until the end of line.  Double quotes are always treated as literals.
+
+foo-bar =
+  | Foo "Bar"
+
+foo-bar
+  [trait] Foo "Bar"
+
+foo-bar = { $foo ->
+  [bar] Foo "Bar" [these are literal brackets]
+  [baz] Foo "Baz" [these are literal brackets]
+}
+
+# Literal opening braces in both inline and block strings must be escaped.
+foo-bar = Foo \{ not a placeable }
+foo-bar =
+  | Foo \{ not a placeable }
+
+# Inline strings are allowed inside of the placeable expression.
+foo-bar = Foo { "Bar" }
+foo-bar = Foo
+  | { "Bar" }
+
+# Block strings can be nested
+foo-bar =
+  | Foo foo foo foo { $x ->
+    [bar] bar bar bar
+        | bar bar bar
+    [baz]
+      | baz baz baz
+      | baz baz baz
+  } foo foo foo.
