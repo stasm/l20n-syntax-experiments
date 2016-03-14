@@ -27,13 +27,13 @@ party-invites = { $gender_of_host ->
       | { $host } invites { $guest } and { OFFSET($num_guests, 1) } other people
       | to her party.
   }
-  [male] { PLURAL($num_guests) -> {
+  [male] { PLURAL($num_guests) ->
     [0]     { $host } does not give a party.
     [1]     { $host } invites { $guest } to his party.
     [2]     { $host } invites { $guest } and one other person to her party.
    *[other] { $host } invites { $guest } and { OFFSET($num_guests, 1) } other people to his party.
   }
- *[other] { PLURAL($num_guests) -> {
+ *[other] { PLURAL($num_guests) ->
     [0]     { $host } does not give a party.
     [1]     { $host } invites { $guest } to their party.
     [2]     { $host } invites { $guest } and one other person to their party.
